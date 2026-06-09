@@ -35,6 +35,11 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ received: true });
     }
 
+    if (!order.book) {
+      console.error("Webhook: book not found for order", orderId);
+      return NextResponse.json({ received: true });
+    }
+
     await prisma.order.update({
       where: { id: orderId },
       data: {
