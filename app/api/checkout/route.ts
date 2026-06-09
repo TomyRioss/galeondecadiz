@@ -17,14 +17,19 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Campos requeridos faltantes" }, { status: 400 });
     }
 
+    if (!["COP", "USD"].includes(moneda)) {
+      return NextResponse.json({ error: "Moneda inválida" }, { status: 400 });
+    }
+
     const book = await prisma.book.findUnique({ where: { slug: bookSlug } });
     if (!book || !book.activo) {
       return NextResponse.json({ error: "Libro no encontrado" }, { status: 404 });
     }
 
-    const monto = moneda === "COP"
-      ? Number(book.precioCop)
-      : Number(book.precioUsd);
+    const monto = moneda === "COP" ? Number(book.precioCop) : Number(book.precioUsd);
+    if (isNaN(monto) || monto <= 0) {
+      return NextResponse.json({ error: "Precio inválido" }, { status: 500 });
+    }
 
     const order = await prisma.order.create({
       data: {
@@ -53,8 +58,8 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({
       orderId: order.id,
-      initPoint: preference.init_point,
-      sandboxInitPoint: preference.sandbox_init_point,
+      initPoint: preference.init_point ?? null,
+      sandboxInitPoint: preference.sandbox_init_point ?? null,
     });
   } catch (err) {
     console.error("Checkout error:", err);
