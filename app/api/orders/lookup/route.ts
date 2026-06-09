@@ -27,7 +27,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({
       id: order.id,
       estado: order.estado,
-      bookNombre: order.book.nombre,
+      bookNombre: order.book?.nombre ?? "Sin título",
       moneda: order.moneda,
       monto: Number(order.monto),
       createdAt: order.createdAt,
