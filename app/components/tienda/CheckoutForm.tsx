@@ -70,7 +70,7 @@ export default function CheckoutForm({ bookSlug, precioCop, precioUsd }: Checkou
           required
           value={form.buyerName}
           onChange={(e) => setForm((f) => ({ ...f, buyerName: e.target.value }))}
-          className="w-full border-2 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2"
+          className="w-full border-2 rounded-lg px-3 py-2 text-sm outline-none"
           style={{ borderColor: "#B87333", background: "#fdf8f0", color: "#1A3A5C" }}
           placeholder="Tu nombre completo"
         />
@@ -88,7 +88,7 @@ export default function CheckoutForm({ bookSlug, precioCop, precioUsd }: Checkou
           required
           value={form.buyerEmail}
           onChange={(e) => setForm((f) => ({ ...f, buyerEmail: e.target.value }))}
-          className="w-full border-2 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2"
+          className="w-full border-2 rounded-lg px-3 py-2 text-sm outline-none"
           style={{ borderColor: "#B87333", background: "#fdf8f0", color: "#1A3A5C" }}
           placeholder="tu@correo.com"
         />
