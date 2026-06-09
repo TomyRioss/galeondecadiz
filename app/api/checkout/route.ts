@@ -17,6 +17,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Campos requeridos faltantes" }, { status: 400 });
     }
 
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(buyerEmail)) {
+      return NextResponse.json({ error: "Correo electrónico inválido" }, { status: 400 });
+    }
+
     if (!["COP", "USD"].includes(moneda)) {
       return NextResponse.json({ error: "Moneda inválida" }, { status: 400 });
     }
