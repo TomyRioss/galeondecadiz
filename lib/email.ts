@@ -28,7 +28,7 @@ export async function sendOrderConfirmationEmail(params: OrderEmailParams) {
         <h1 style="font-size: 22px; color: #1A3A5C;">¡Gracias por tu compra, ${params.buyerName}!</h1>
         <p>Hemos recibido tu pago de <strong>${montoFormatted}</strong> por el libro:</p>
         <h2 style="color: #B87333;">${params.bookNombre}</h2>
-        <p style="color: #555;">Autor: ${params.bookAutor}</p>
+        <p style="color: #1B6CA8;">Autor: ${params.bookAutor}</p>
         <hr style="border-color: #B87333; margin: 24px 0;" />
         <h3 style="color: #1A3A5C;">Descarga tu e-book</h3>
         <p>El siguiente enlace estará disponible por <strong>24 horas</strong>:</p>
@@ -39,7 +39,7 @@ export async function sendOrderConfirmationEmail(params: OrderEmailParams) {
         <hr style="border-color: #B87333; margin: 24px 0;" />
         <h3 style="color: #1A3A5C;">Envío del libro físico</h3>
         <p>Tu ejemplar impreso está siendo preparado. Recibirás otro correo con el número de guía en los próximos <strong>3 a 5 días hábiles</strong>.</p>
-        <p style="font-size:12px; color:#888;">Número de pedido: ${params.orderId}</p>
+        <p style="font-size:12px; color:#1B6CA8;">Número de pedido: ${params.orderId}</p>
       </div>
     `,
   });
