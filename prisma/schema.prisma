@@ -1,0 +1,52 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Book {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  nombre      String
+  autor       String
+  descripcion String   @db.Text
+  precioCop   Decimal  @db.Decimal(12, 2)
+  precioUsd   Decimal  @db.Decimal(10, 2)
+  pdfUrl      String
+  coverUrl    String
+  activo      Boolean  @default(true)
+  tipo        BookTipo @default(IMPRESO)
+  createdAt   DateTime @default(now())
+  orders      Order[]
+}
+
+model Order {
+  id             String      @id @default(cuid())
+  bookId         String
+  book           Book        @relation(fields: [bookId], references: [id])
+  buyerName      String
+  buyerEmail     String
+  monto          Decimal     @db.Decimal(12, 2)
+  moneda         String
+  estado         OrderStatus @default(PENDING)
+  mpPaymentId    String?
+  mpPreferenceId String?
+  emailEnviado   Boolean     @default(false)
+  createdAt      DateTime    @default(now())
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  FAILED
+}
+
+enum BookTipo {
+  IMPRESO
+  EBOOK
+  AMBOS
+}
