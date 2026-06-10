@@ -3,6 +3,9 @@
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Suspense } from "react";
+import { FaWhatsapp } from "react-icons/fa6";
+
+const WA_NUMBER = "";
 
 function ConfirmacionContent() {
   const params = useSearchParams();
@@ -64,13 +67,25 @@ function ConfirmacionContent() {
         </>
       )}
 
-      <Link
-        href="/tienda"
-        className="inline-block mt-8 px-8 py-3 rounded-lg text-white font-semibold"
-        style={{ background: "linear-gradient(135deg, #E8511A, #B87333)" }}
-      >
-        Volver a la tienda
-      </Link>
+      <div className="flex flex-col items-center gap-3 mt-8">
+        <a
+          href={`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent("Hola, acabo de realizar un pedido en galeonadecadiz.org y necesito soporte.")}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-white font-semibold text-sm"
+          style={{ background: "#2E6B3E", fontFamily: "var(--font-cinzel, serif)" }}
+        >
+          <FaWhatsapp size={14} />
+          Soporte por WhatsApp
+        </a>
+        <Link
+          href="/tienda"
+          className="text-xs tracking-wide transition-colors hover:opacity-70"
+          style={{ color: "#B87333", fontFamily: "var(--font-cinzel, serif)" }}
+        >
+          Volver a la tienda
+        </Link>
+      </div>
     </div>
   );
 }

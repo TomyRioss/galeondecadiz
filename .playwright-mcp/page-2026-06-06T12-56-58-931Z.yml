@@ -1,0 +1,58 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e5]:
+      - link "Logo Fundación Social Galeona de Cádiz GC Fundación Social Galeona de Cádiz" [ref=e6] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e7]:
+          - img "Logo Fundación Social Galeona de Cádiz" [ref=e8]
+          - generic [ref=e10]: GC
+        - generic [ref=e11]:
+          - paragraph [ref=e12]: Fundación Social
+          - paragraph [ref=e13]: Galeona de Cádiz
+      - navigation "Menú principal" [ref=e15]:
+        - button "Nosotros" [ref=e17]:
+          - text: Nosotros
+          - img [ref=e18]
+        - button "Fondo Editorial" [ref=e21]:
+          - text: Fondo Editorial
+          - img [ref=e22]
+        - button "Capacitaciones" [ref=e25]:
+          - text: Capacitaciones
+          - img [ref=e26]
+        - button "Devocionales" [ref=e29]:
+          - text: Devocionales
+          - img [ref=e30]
+        - button "Auspicios y Pagos" [ref=e33]:
+          - text: Auspicios y Pagos
+          - img [ref=e34]
+        - button "Tienda" [ref=e37]:
+          - text: Tienda
+          - img [ref=e38]
+      - link "Logo EDN - Escuela de Nazaret EDN" [ref=e41] [cursor=pointer]:
+        - /url: /escuela-nazaret
+        - generic [ref=e42]:
+          - img "Logo EDN - Escuela de Nazaret" [ref=e43]
+          - generic [ref=e45]: EDN
+  - main [ref=e46]:
+    - main [ref=e48]:
+      - img "Next.js logo" [ref=e49]
+      - generic [ref=e50]:
+        - heading "To get started, edit the page.tsx file." [level=1] [ref=e51]
+        - paragraph [ref=e52]:
+          - text: Looking for a starting point or more instructions? Head over to
+          - link "Templates" [ref=e53] [cursor=pointer]:
+            - /url: https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app
+          - text: or the
+          - link "Learning" [ref=e54] [cursor=pointer]:
+            - /url: https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app
+          - text: center.
+      - generic [ref=e55]:
+        - link "Vercel logomark Deploy Now" [ref=e56] [cursor=pointer]:
+          - /url: https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app
+          - img "Vercel logomark" [ref=e57]
+          - text: Deploy Now
+        - link "Documentation" [ref=e58] [cursor=pointer]:
+          - /url: https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app
+  - button "Open Next.js Dev Tools" [ref=e64] [cursor=pointer]:
+    - img [ref=e65]
+  - alert [ref=e68]

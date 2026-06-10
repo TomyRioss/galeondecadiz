@@ -14,8 +14,10 @@ model Book {
   descripcion String   @db.Text
   precioCop   Decimal  @db.Decimal(12, 2)
   precioUsd   Decimal  @db.Decimal(10, 2)
-  pdfUrl      String
-  coverUrl    String
+  pdfUrl           String   @default("")
+  coverUrl         String   @default("")
+  authorImageUrl   String   @default("")
+  authorBio        String   @default("") @db.Text
   activo      Boolean  @default(true)
   tipo        BookTipo @default(IMPRESO)
   createdAt   DateTime @default(now())
@@ -47,4 +49,148 @@ enum BookTipo {
   IMPRESO
   EBOOK
   AMBOS
+}
+
+model AdminUser {
+  id           String    @id @default(uuid()) @db.Uuid
+  email        String    @unique
+  passwordHash String    @map("password_hash")
+  role         AdminRole
+  active       Boolean   @default(true)
+  createdAt    DateTime  @default(now()) @map("created_at")
+
+  @@map("admin_users")
+}
+
+enum AdminRole {
+  admin
+  superadmin
+}
+
+// T18 — libro principal con campos editoriales
+model BookEditorial {
+  id             String    @id @default(uuid()) @db.Uuid
+  slug           String    @unique
+  title          String
+  subtitle       String?
+  author         String
+  description    String    @db.Text
+  editorial      String    @default("Fondo Editorial Galeona de Cádiz")
+  coverImageUrl  String?   @map("cover_image_url")
+  canvasImageUrl String?   @map("canvas_image_url")
+  price          Decimal?  @db.Decimal(12, 2)
+  available      Boolean   @default(true)
+  shippingInfo   String?   @map("shipping_info")
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+  ebookAccessLogs EbookAccessLog[]
+
+  @@map("books_editorial")
+}
+
+// T20 — producto de tienda vinculado a libro
+model Product {
+  id        String   @id @default(uuid()) @db.Uuid
+  bookSlug  String   @map("book_slug")
+  price     Decimal  @db.Decimal(12, 2)
+  stock     Int      @default(0)
+  available Boolean  @default(true)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  orders    GaleonaOrder[]
+
+  @@map("products")
+}
+
+// T22 — pedidos de compra de libro impreso
+model GaleonaOrder {
+  id            String      @id @default(uuid()) @db.Uuid
+  productId     String?     @map("product_id") @db.Uuid
+  product       Product?    @relation(fields: [productId], references: [id])
+  fullName      String      @map("full_name")
+  email         String
+  phone         String
+  city          String
+  country       String
+  address       String?
+  quantity      Int         @default(1)
+  observations  String?     @db.Text
+  acceptedTerms Boolean     @map("accepted_terms")
+  status        String      @default("pending")
+  paymentStatus String      @default("pending") @map("payment_status")
+  createdAt     DateTime    @default(now()) @map("created_at")
+
+  @@map("orders_galeona")
+}
+
+// T26 — usuarios registrados para leer e-book
+model EbookUser {
+  id            String    @id @default(uuid()) @db.Uuid
+  fullName      String    @map("full_name")
+  email         String    @unique
+  phone         String?
+  city          String?
+  country       String?
+  acceptedTerms Boolean   @default(false) @map("accepted_terms")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  lastAccessAt  DateTime? @map("last_access_at")
+  accessLogs    EbookAccessLog[]
+
+  @@map("ebook_users")
+}
+
+// T27 — historial de accesos al e-book
+model EbookAccessLog {
+  id          String         @id @default(uuid()) @db.Uuid
+  userId      String         @map("ebook_user_id") @db.Uuid
+  user        EbookUser      @relation(fields: [userId], references: [id])
+  bookId      String?        @map("book_id") @db.Uuid
+  book        BookEditorial? @relation(fields: [bookId], references: [id])
+  accessDate  DateTime       @default(now()) @map("access_date")
+  source      String?
+
+  @@map("ebook_access_logs")
+}
+
+// T30 — donaciones o intenciones de donación
+model Donation {
+  id        String   @id @default(uuid()) @db.Uuid
+  fullName  String   @map("full_name")
+  email     String
+  phone     String?
+  amount    Decimal? @db.Decimal(12, 2)
+  message   String?  @db.Text
+  status    String   @default("intention")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("donations")
+}
+
+// T38 — solicitudes de contacto/WhatsApp
+model ContactRequest {
+  id        String   @id @default(uuid()) @db.Uuid
+  fullName  String   @map("full_name")
+  email     String
+  phone     String?
+  message   String?  @db.Text
+  source    String
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("contact_requests")
+}
+
+// T10 — solicitudes de publicaciones impresas
+model PublicationRequest {
+  id          String   @id @default(uuid()) @db.Uuid
+  fullName    String   @map("full_name")
+  email       String
+  phone       String?
+  city        String?
+  country     String?
+  publication String
+  quantity    Int      @default(1)
+  message     String?  @db.Text
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@map("publication_requests")
 }

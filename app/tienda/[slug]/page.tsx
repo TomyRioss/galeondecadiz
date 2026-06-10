@@ -1,10 +1,15 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
 // @ts-ignore
 import { prisma } from "@/lib/prisma";
-import CheckoutForm from "@/app/components/tienda/CheckoutForm";
+import BookFlipViewerDynamic from "@/app/components/tienda/BookFlipViewerDynamic";
 
 export const dynamic = "force-dynamic";
+
+const WA_NUMBER = "";
+const WA_MSG = (title: string) =>
+  encodeURIComponent(`Cordial saludo, estoy interesado en el libro "${title}".`);
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -13,69 +18,186 @@ interface Props {
 export default async function BookDetailPage({ params }: Props) {
   const { slug } = await params;
 
-  const book = await prisma.book.findUnique({
-    where: { slug },
-  });
-
+  const book = await prisma.book.findUnique({ where: { slug } });
   if (!book || !book.activo) notFound();
+
+  const precioCop = Number(book.precioCop);
+  const precioUsd = Number(book.precioUsd);
 
   return (
     <div style={{ background: "#F5EDD6", minHeight: "100vh" }}>
-      <section className="py-12 px-6" style={{ background: "#1A3A5C" }}>
-        <div className="max-w-5xl mx-auto flex flex-col md:flex-row gap-10 items-start">
-          <div className="relative w-full md:w-64 h-80 flex-shrink-0 rounded-xl overflow-hidden shadow-xl">
-            <Image
-              src={book.coverUrl}
-              alt={`Portada de ${book.nombre}`}
-              fill
-              className="object-cover"
-            />
+
+      {/* ── HERO ── */}
+      <section
+        className="py-14 px-6"
+        style={{ background: "linear-gradient(160deg, #1A3A5C 70%, #0f2440 100%)" }}
+      >
+        <div className="max-w-5xl mx-auto flex flex-col md:flex-row gap-10 items-center md:items-start">
+
+          {/* Portada */}
+          <div
+            className="flex-shrink-0 rounded-2xl overflow-hidden shadow-2xl"
+            style={{ border: "3px solid #B87333", width: 220, height: 300 }}
+          >
+            {book.coverUrl ? (
+              <Image
+                src={book.coverUrl}
+                alt={book.nombre}
+                width={220}
+                height={300}
+                className="object-cover w-full h-full"
+                priority
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center" style={{ background: "#0f2440" }}>
+                <span className="text-xs text-white/40" style={{ fontFamily: "var(--font-cinzel, serif)" }}>
+                  Sin portada
+                </span>
+              </div>
+            )}
           </div>
-          <div className="flex flex-col gap-3">
+
+          {/* Info principal */}
+          <div className="flex flex-col gap-4 flex-1">
+            <p
+              className="text-[#B87333] text-xs tracking-[0.3em] uppercase"
+              style={{ fontFamily: "var(--font-cinzel, serif)" }}
+            >
+              Fondo Editorial Galeona de Cádiz
+            </p>
+
             <h1
-              className="text-3xl md:text-4xl font-bold text-white"
+              className="text-3xl md:text-5xl font-bold text-white leading-tight"
               style={{ fontFamily: "var(--font-cinzel, serif)" }}
             >
               {book.nombre}
             </h1>
-            <p style={{ color: "#d4c9a8" }}>{book.autor}</p>
-            <p
-              className="text-base leading-relaxed mt-2"
-              style={{ color: "#e8dfc4", fontFamily: "var(--font-lora, serif)" }}
-            >
-              {book.descripcion}
+
+            <p className="text-lg" style={{ color: "#B87333", fontFamily: "var(--font-lora, serif)" }}>
+              {book.autor}
             </p>
-            <div className="mt-4 flex gap-6">
-              <div>
-                <p className="text-xs" style={{ color: "#d4c9a8" }}>Precio COP</p>
-                <p className="text-2xl font-bold" style={{ color: "#B87333" }}>
-                  ${Number(book.precioCop).toLocaleString("es-CO")}
-                </p>
-              </div>
-              <div>
-                <p className="text-xs" style={{ color: "#d4c9a8" }}>Precio USD</p>
-                <p className="text-2xl font-bold" style={{ color: "#B87333" }}>
-                  ${Number(book.precioUsd).toFixed(2)}
-                </p>
-              </div>
+
+            {/* Precios */}
+            <div className="flex gap-6 mt-2">
+              {precioCop > 0 && (
+                <div>
+                  <p className="text-xs text-white/40 uppercase tracking-widest mb-0.5" style={{ fontFamily: "var(--font-cinzel, serif)" }}>
+                    Precio COP
+                  </p>
+                  <p className="text-2xl font-bold" style={{ color: "#F5EDD6", fontFamily: "var(--font-cinzel, serif)" }}>
+                    ${precioCop.toLocaleString("es-CO")}
+                  </p>
+                </div>
+              )}
+              {precioUsd > 0 && (
+                <div>
+                  <p className="text-xs text-white/40 uppercase tracking-widest mb-0.5" style={{ fontFamily: "var(--font-cinzel, serif)" }}>
+                    Precio USD
+                  </p>
+                  <p className="text-2xl font-bold" style={{ color: "#F5EDD6", fontFamily: "var(--font-cinzel, serif)" }}>
+                    ${precioUsd.toFixed(2)}
+                  </p>
+                </div>
+              )}
             </div>
+
           </div>
         </div>
       </section>
 
-      <section className="max-w-md mx-auto px-6 py-12">
-        <h2
-          className="text-xl font-semibold mb-6"
-          style={{ fontFamily: "var(--font-cinzel, serif)", color: "#1A3A5C" }}
-        >
-          Completar compra
-        </h2>
-        <CheckoutForm
-          bookSlug={book.slug}
-          precioCop={Number(book.precioCop)}
-          precioUsd={Number(book.precioUsd)}
-        />
+      {/* ── CUERPO ── */}
+      <section className="max-w-5xl mx-auto px-6 py-14 flex flex-col gap-14">
+
+        {/* Descripción */}
+        {book.descripcion && (
+          <div className="flex flex-col gap-3">
+            <h2
+              className="text-xs tracking-[0.3em] uppercase"
+              style={{ color: "#B87333", fontFamily: "var(--font-cinzel, serif)" }}
+            >
+              Sobre el libro
+            </h2>
+            <p
+              className="text-base leading-relaxed whitespace-pre-line"
+              style={{ color: "#1A3A5C", fontFamily: "var(--font-lora, serif)" }}
+            >
+              {book.descripcion}
+            </p>
+          </div>
+        )}
+
+        {/* Imagen del autor */}
+        {book.authorImageUrl && (
+          <div className="flex flex-col md:flex-row gap-8 items-center md:items-start">
+            <div
+              className="flex-shrink-0 rounded-2xl overflow-hidden shadow-lg"
+              style={{ border: "2px solid #B87333", width: 180, height: 220 }}
+            >
+              <Image
+                src={book.authorImageUrl}
+                alt={book.autor}
+                width={180}
+                height={220}
+                className="object-cover w-full h-full"
+                loading="eager"
+              />
+            </div>
+            <div className="flex flex-col gap-2 justify-center">
+              <h2
+                className="text-xs tracking-[0.3em] uppercase"
+                style={{ color: "#B87333", fontFamily: "var(--font-cinzel, serif)" }}
+              >
+                Sobre la autora
+              </h2>
+              <p
+                className="text-xl font-semibold"
+                style={{ color: "#1A3A5C", fontFamily: "var(--font-cinzel, serif)" }}
+              >
+                {book.autor}
+              </p>
+              {(book as any).authorBio && (
+                <p
+                  className="text-sm leading-relaxed mt-1"
+                  style={{ color: "#1A3A5C", fontFamily: "var(--font-lora, serif)" }}
+                >
+                  {(book as any).authorBio}
+                </p>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Previsualización */}
+        {book.pdfUrl && (
+          <div className="flex flex-col gap-4">
+            <h2
+              className="text-xs tracking-[0.3em] uppercase"
+              style={{ color: "#B87333", fontFamily: "var(--font-cinzel, serif)" }}
+            >
+              Previsualización del libro
+            </h2>
+            <div
+              className="rounded-2xl p-6 overflow-hidden"
+              style={{ background: "linear-gradient(135deg,#e8dfc4,#d4c9a8)", border: "2px solid #B87333" }}
+            >
+              <BookFlipViewerDynamic pdfUrl={book.pdfUrl} />
+            </div>
+          </div>
+        )}
+
       </section>
+
+      {/* Volver */}
+      <div className="max-w-5xl mx-auto px-6 pb-12">
+        <Link
+          href="/tienda"
+          className="text-xs tracking-widest uppercase transition-colors hover:opacity-70"
+          style={{ color: "#B87333", fontFamily: "var(--font-cinzel, serif)" }}
+        >
+          ← Volver a la tienda
+        </Link>
+      </div>
+
     </div>
   );
 }

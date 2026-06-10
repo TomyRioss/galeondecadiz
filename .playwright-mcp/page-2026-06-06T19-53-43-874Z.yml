@@ -1,0 +1,192 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e5]:
+      - link "Logo Fundación Social Galeona de Cádiz GC" [ref=e6] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e7]:
+          - img "Logo Fundación Social Galeona de Cádiz" [ref=e8]
+          - generic [ref=e10]: GC
+      - navigation "Menú principal" [ref=e12]:
+        - button "Nosotros" [ref=e14]:
+          - text: Nosotros
+          - img [ref=e15]
+        - button "Fondo Editorial" [ref=e18]:
+          - text: Fondo Editorial
+          - img [ref=e19]
+        - button "Capacitaciones" [ref=e22]:
+          - text: Capacitaciones
+          - img [ref=e23]
+        - button "Devocionales" [ref=e26]:
+          - text: Devocionales
+          - img [ref=e27]
+        - button "Auspicios y Pagos" [ref=e30]:
+          - text: Auspicios y Pagos
+          - img [ref=e31]
+        - button "Tienda" [ref=e34]:
+          - text: Tienda
+          - img [ref=e35]
+        - button "Contacto" [ref=e38]:
+          - text: Contacto
+          - img [ref=e39]
+      - link "Logo EDN - Escuela de Nazaret EDN" [ref=e42] [cursor=pointer]:
+        - /url: /escuela-nazaret
+        - generic [ref=e43]:
+          - img "Logo EDN - Escuela de Nazaret" [ref=e44]
+          - generic [ref=e46]: EDN
+  - main [ref=e47]:
+    - generic [ref=e48]:
+      - link "Ingresar al Fondo Editorial" [ref=e50] [cursor=pointer]:
+        - /url: "#"
+      - generic [ref=e52]:
+        - link "Facebook" [ref=e53] [cursor=pointer]:
+          - /url: "#"
+          - img [ref=e55]
+        - link "Instagram" [ref=e57] [cursor=pointer]:
+          - /url: "#"
+          - img [ref=e59]
+        - link "YouTube" [ref=e61] [cursor=pointer]:
+          - /url: "#"
+          - img [ref=e63]
+        - link "LinkedIn" [ref=e65] [cursor=pointer]:
+          - /url: "#"
+          - img [ref=e67]
+        - link "Pinterest" [ref=e69] [cursor=pointer]:
+          - /url: "#"
+          - img [ref=e71]
+        - link "Twitter / X" [ref=e73] [cursor=pointer]:
+          - /url: "#"
+          - img [ref=e75]
+        - link "TikTok" [ref=e77] [cursor=pointer]:
+          - /url: "#"
+          - img [ref=e79]
+        - link "Spotify" [ref=e81] [cursor=pointer]:
+          - /url: "#"
+          - img [ref=e83]
+        - link "Speaker" [ref=e85] [cursor=pointer]:
+          - /url: "#"
+          - img [ref=e87]
+          - generic [ref=e89]: Speaker
+        - link "Google Podcast" [ref=e90] [cursor=pointer]:
+          - /url: "#"
+          - img [ref=e92]
+          - generic [ref=e94]: G. Podcast
+      - generic [ref=e98]:
+        - heading "Productos y Actividades" [level=2] [ref=e99]
+        - generic [ref=e100]:
+          - link "Canon Lector Canon Lector Obras esenciales para la formación lectora." [ref=e101] [cursor=pointer]:
+            - /url: "#"
+            - img "Canon Lector" [ref=e103]
+            - generic [ref=e104]: Canon Lector
+            - paragraph [ref=e105]: Obras esenciales para la formación lectora.
+          - link "Formación Formación Cursos y talleres de desarrollo personal." [ref=e106] [cursor=pointer]:
+            - /url: "#"
+            - img "Formación" [ref=e108]
+            - generic [ref=e109]: Formación
+            - paragraph [ref=e110]: Cursos y talleres de desarrollo personal.
+          - link "Consultoría Consultoría Asesoramiento jurídico y estratégico." [ref=e111] [cursor=pointer]:
+            - /url: "#"
+            - img "Consultoría" [ref=e113]
+            - generic [ref=e114]: Consultoría
+            - paragraph [ref=e115]: Asesoramiento jurídico y estratégico.
+          - link "Acción Cultural Acción Cultural Arte y cultura con identidad institucional." [ref=e116] [cursor=pointer]:
+            - /url: "#"
+            - img "Acción Cultural" [ref=e118]
+            - generic [ref=e119]: Acción Cultural
+            - paragraph [ref=e120]: Arte y cultura con identidad institucional.
+      - generic [ref=e121]:
+        - link "Videos" [ref=e122] [cursor=pointer]:
+          - /url: "#"
+          - img [ref=e124]
+          - generic [ref=e126]: Videos
+        - link "Contáctenos" [ref=e127] [cursor=pointer]:
+          - /url: "#"
+          - generic [ref=e128]: Contáctenos
+        - link "Podcasts" [ref=e129] [cursor=pointer]:
+          - /url: "#"
+          - img [ref=e131]
+          - generic [ref=e133]: Podcasts
+  - contentinfo [ref=e134]:
+    - generic [ref=e136]:
+      - generic [ref=e137]:
+        - generic [ref=e138]:
+          - generic [ref=e139]:
+            - paragraph [ref=e140]: Fundación Social
+            - paragraph [ref=e141]: Galeona de Cádiz
+          - generic [ref=e142]:
+            - generic [ref=e143]:
+              - img [ref=e144]
+              - generic [ref=e146]: Dirección institucional — placeholder
+            - generic [ref=e147]:
+              - img [ref=e148]
+              - link "contacto@galeonadecadiz.org" [ref=e150] [cursor=pointer]:
+                - /url: mailto:contacto@galeonadecadiz.org
+            - generic [ref=e151]:
+              - img [ref=e152]
+              - generic [ref=e154]: +54 000 000 0000
+        - generic [ref=e155]:
+          - paragraph [ref=e156]: Enlaces
+          - list [ref=e157]:
+            - listitem [ref=e158]:
+              - link "Nosotros" [ref=e159] [cursor=pointer]:
+                - /url: /nosotros
+            - listitem [ref=e160]:
+              - link "Fondo Editorial" [ref=e161] [cursor=pointer]:
+                - /url: /fondo-editorial
+            - listitem [ref=e162]:
+              - link "Capacitaciones" [ref=e163] [cursor=pointer]:
+                - /url: /capacitaciones
+            - listitem [ref=e164]:
+              - link "Devocionales" [ref=e165] [cursor=pointer]:
+                - /url: /devocionales
+            - listitem [ref=e166]:
+              - link "Auspicios y Pagos" [ref=e167] [cursor=pointer]:
+                - /url: /auspicios-pagos
+            - listitem [ref=e168]:
+              - link "Tienda" [ref=e169] [cursor=pointer]:
+                - /url: /tienda
+            - listitem [ref=e170]:
+              - link "Contacto" [ref=e171] [cursor=pointer]:
+                - /url: /contacto
+        - generic [ref=e172]:
+          - paragraph [ref=e173]: Redes Sociales
+          - generic [ref=e174]:
+            - link "Facebook" [ref=e175] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e176]
+            - link "Instagram" [ref=e178] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e179]
+            - link "YouTube" [ref=e181] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e182]
+            - link "LinkedIn" [ref=e184] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e185]
+            - link "Pinterest" [ref=e187] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e188]
+            - link "Twitter / X" [ref=e190] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e191]
+            - link "TikTok" [ref=e193] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e194]
+            - link "Spotify" [ref=e196] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e197]
+            - link "Speaker" [ref=e199] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e200]
+            - link "Google Podcast" [ref=e202] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e203]
+      - generic [ref=e206]:
+        - paragraph [ref=e207]: Copyright © 2026 Fundación Social Galeona de Cádiz / Fondo Editorial Galeona. Todos los derechos reservados.
+        - generic [ref=e208]:
+          - link "Política de privacidad" [ref=e209] [cursor=pointer]:
+            - /url: /privacidad
+          - link "Términos de uso" [ref=e210] [cursor=pointer]:
+            - /url: /terminos
+  - button "Open Next.js Dev Tools" [ref=e216] [cursor=pointer]:
+    - img [ref=e217]
+  - alert [ref=e220]

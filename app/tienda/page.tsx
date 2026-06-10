@@ -1,8 +1,9 @@
 // @ts-ignore
 import { prisma } from "@/lib/prisma";
 import BookGrid from "@/app/components/tienda/BookGrid";
+import { FaWhatsapp } from "react-icons/fa6";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export default async function TiendaPage() {
   const books = await prisma.book.findMany({
@@ -43,6 +44,19 @@ export default async function TiendaPage() {
 
       <section className="max-w-6xl mx-auto px-6 py-12">
         <BookGrid books={booksForGrid} />
+
+        <div className="flex justify-center mt-10">
+          <a
+            href="https://wa.me/?text=Hola%2C%20me%20interesa%20un%20libro%20del%20Fondo%20Editorial%20Galeona."
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-white font-semibold text-sm tracking-wide transition-opacity hover:opacity-90"
+            style={{ background: "#2E6B3E", fontFamily: "var(--font-cinzel, serif)" }}
+          >
+            <FaWhatsapp size={16} />
+            Contactar por WhatsApp
+          </a>
+        </div>
       </section>
     </div>
   );

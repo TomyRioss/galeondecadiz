@@ -1,65 +1,219 @@
 import Image from "next/image";
+import {
+  FaFacebookF, FaInstagram, FaYoutube, FaLinkedinIn,
+  FaPinterestP, FaXTwitter, FaTiktok, FaSpotify,
+  FaPlay, FaMicrophone, FaWhatsapp,
+} from "react-icons/fa6";
+import { SiSpeakerdeck, SiGooglecast } from "react-icons/si";
+
+const socialLinks = [
+  { name: "Facebook",      href: "#", Icon: FaFacebookF },
+  { name: "Instagram",     href: "#", Icon: FaInstagram },
+  { name: "YouTube",       href: "#", Icon: FaYoutube },
+  { name: "LinkedIn",      href: "#", Icon: FaLinkedinIn },
+  { name: "Pinterest",     href: "#", Icon: FaPinterestP },
+  { name: "Twitter / X",   href: "#", Icon: FaXTwitter },
+  { name: "TikTok",        href: "#", Icon: FaTiktok },
+  { name: "Spotify",       href: "#", Icon: FaSpotify },
+  { name: "Speaker",        href: "#", Icon: SiSpeakerdeck, label: "Speaker" },
+  { name: "Google Podcast", href: "#", Icon: SiGooglecast,  label: "G. Podcast" },
+  { name: "WhatsApp",       href: "https://wa.me/", Icon: FaWhatsapp, label: "WhatsApp" },
+];
+
+const products = [
+  {
+    title: "Canon Lector",
+    initials: "CL",
+    img: "https://images.pexels.com/photos/13061422/pexels-photo-13061422.jpeg",
+    desc: "Obras esenciales para la formación lectora.",
+  },
+  {
+    title: "Formación",
+    initials: "F",
+    img: "https://images.pexels.com/photos/9572637/pexels-photo-9572637.jpeg",
+    desc: "Cursos y talleres de desarrollo personal.",
+  },
+  {
+    title: "Consultoría",
+    initials: "C",
+    img: "https://images.pexels.com/photos/5686105/pexels-photo-5686105.jpeg",
+    desc: "Asesoramiento jurídico y estratégico.",
+  },
+  {
+    title: "Acción Cultural",
+    initials: "AC",
+    img: "https://images.pexels.com/photos/31846587/pexels-photo-31846587.jpeg",
+    desc: "Arte y cultura con identidad institucional.",
+  },
+  {
+    title: "Fondo Editorial",
+    initials: "FE",
+    img: "https://images.pexels.com/photos/1370295/pexels-photo-1370295.jpeg",
+    desc: "Publicaciones, libros y recursos editoriales.",
+    href: "/fondo-editorial",
+  },
+];
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
+    <div className="flex flex-col min-h-full" style={{ background: "#F5EDD6" }}>
+
+      {/* CTA Editorial */}
+      <section className="flex justify-center pt-8 pb-4 px-4">
+        <a
+          href="/fondo-editorial"
+          className="inline-block px-8 py-3 rounded-full text-white font-semibold tracking-widest uppercase text-sm transition-opacity hover:opacity-90 shadow-md"
+          style={{
+            background: "linear-gradient(90deg, #E8511A, #B87333)",
+            fontFamily: "var(--font-cinzel, serif)",
+            letterSpacing: "0.18em",
+          }}
+        >
+          Ingresar al Fondo Editorial
+        </a>
+      </section>
+
+      {/* Redes Sociales */}
+      <section className="flex justify-center py-5 px-4">
+        <div className="flex flex-wrap justify-center gap-3">
+          {socialLinks.map(({ name, href, Icon, label }) => (
             <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+              key={name}
+              href={href}
+              aria-label={name}
+              title={name}
+              className="flex flex-col items-center gap-1 group transition-all duration-150"
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+              <div
+                className="w-10 h-10 rounded-full flex items-center justify-center text-white group-hover:scale-110 group-hover:shadow-md transition-transform duration-150"
+                style={{ background: "#1B6CA8", border: "1.5px solid #B87333" }}
+              >
+                <Icon size={18} />
+              </div>
+              {label && (
+                <span
+                  className="text-[0.6rem] tracking-wide"
+                  style={{ color: "#1B6CA8", fontFamily: "var(--font-cinzel, serif)" }}
+                >
+                  {label}
+                </span>
+              )}
+            </a>
+          ))}
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+      </section>
+
+      {/* Separador decorativo */}
+      <div className="flex justify-center py-2 px-4">
+        <div className="w-full max-w-2xl h-px" style={{ background: "linear-gradient(90deg, transparent, #B87333, transparent)" }} />
+      </div>
+
+      {/* Grid Productos y Actividades */}
+      <section className="flex justify-center px-4 py-6">
+        <div
+          className="w-full max-w-2xl rounded-2xl p-4 md:p-8 md:border-2 md:border-[#B87333] md:shadow-[0_4px_24px_rgba(184,115,51,0.15)] md:bg-[linear-gradient(135deg,#e8dfc4_0%,#d4c9a8_100%)]"
+        >
+          <h2
+            className="text-center text-lg font-bold mb-6 tracking-widest uppercase"
+            style={{ color: "#1A3A5C", fontFamily: "var(--font-cinzel, serif)", letterSpacing: "0.2em" }}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+            Productos y Actividades
+          </h2>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-10">
+            {products.map((p) => (
+              <a
+                key={p.title}
+                href={"href" in p ? (p as any).href : "#"}
+                className="flex flex-col items-center gap-3 group transition-transform hover:-translate-y-1"
+              >
+                <div
+                  className="w-28 h-28 md:w-32 md:h-32 rounded-full overflow-hidden shadow-md transition-shadow group-hover:shadow-lg relative flex-shrink-0"
+                  style={{ border: "3px solid #B87333" }}
+                >
+                  <Image
+                    src={p.img}
+                    alt={p.title}
+                    fill
+                    className="object-cover"
+                    sizes="128px"
+                  />
+                </div>
+                <span
+                  className="text-sm font-semibold tracking-wider uppercase"
+                  style={{ color: "#B87333", fontFamily: "var(--font-cinzel, serif)" }}
+                >
+                  {p.title}
+                </span>
+                <p
+                  className="text-xs text-center leading-relaxed max-w-[160px]"
+                  style={{ color: "#1A3A5C", fontFamily: "var(--font-lora, serif)" }}
+                >
+                  {p.desc}
+                </p>
+              </a>
+            ))}
+          </div>
         </div>
-      </main>
+      </section>
+
+      {/* Row inferior: Videos | Contáctenos | Podcasts */}
+      <section className="flex items-center justify-between max-w-2xl mx-auto w-full px-6 py-4 gap-4">
+        <a
+          href="#"
+          className="flex flex-col items-center gap-2 group transition-opacity hover:opacity-75 flex-1"
+        >
+          <div
+            className="w-12 h-12 rounded-full flex items-center justify-center text-white"
+            style={{ background: "#1A3A5C", border: "2px solid #B87333" }}
+          >
+            <FaPlay size={18} />
+          </div>
+          <span
+            className="text-sm font-semibold underline underline-offset-2"
+            style={{ color: "#1B6CA8", fontFamily: "var(--font-cinzel, serif)" }}
+          >
+            Videos
+          </span>
+        </a>
+
+        <a
+          href="#"
+          className="flex-1 flex justify-center"
+        >
+          <span
+            className="inline-block px-8 py-3 rounded-full font-semibold tracking-widest uppercase text-sm transition-opacity hover:opacity-80 shadow-sm"
+            style={{
+              background: "#B87333",
+              color: "#F5EDD6",
+              fontFamily: "var(--font-cinzel, serif)",
+              letterSpacing: "0.12em",
+            }}
+          >
+            Contáctenos
+          </span>
+        </a>
+
+        <a
+          href="#"
+          className="flex flex-col items-center gap-2 group transition-opacity hover:opacity-75 flex-1"
+        >
+          <div
+            className="w-12 h-12 rounded-full flex items-center justify-center text-white"
+            style={{ background: "#1A3A5C", border: "2px solid #B87333" }}
+          >
+            <FaMicrophone size={18} />
+          </div>
+          <span
+            className="text-sm font-semibold underline underline-offset-2"
+            style={{ color: "#1B6CA8", fontFamily: "var(--font-cinzel, serif)" }}
+          >
+            Podcasts
+          </span>
+        </a>
+      </section>
+
+
     </div>
   );
 }
