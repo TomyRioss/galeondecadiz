@@ -3,7 +3,6 @@ import Image from "next/image";
 import Link from "next/link";
 // @ts-ignore
 import { prisma } from "@/lib/prisma";
-import BookFlipViewerDynamic from "@/app/components/tienda/BookFlipViewerDynamic";
 
 export const dynamic = "force-dynamic";
 
@@ -167,21 +166,31 @@ export default async function BookDetailPage({ params }: Props) {
           </div>
         )}
 
-        {/* Previsualización */}
+        {/* Leer libro */}
         {book.pdfUrl && (
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-4 items-center">
             <h2
               className="text-xs tracking-[0.3em] uppercase"
               style={{ color: "#B87333", fontFamily: "var(--font-cinzel, serif)" }}
             >
-              Previsualización del libro
+              Vista previa
             </h2>
-            <div
-              className="rounded-2xl p-6 overflow-hidden"
-              style={{ background: "linear-gradient(135deg,#e8dfc4,#d4c9a8)", border: "2px solid #B87333" }}
+            <Link
+              href={`/tienda/${slug}/preview`}
+              className="inline-flex items-center gap-3 mx-auto px-8 py-4 rounded-full font-semibold tracking-widest uppercase text-sm transition-opacity hover:opacity-90"
+              style={{
+                background: "#1A3A5C",
+                color: "#F5EDD6",
+                fontFamily: "var(--font-cinzel, serif)",
+                letterSpacing: "0.15em",
+              }}
             >
-              <BookFlipViewerDynamic pdfUrl={book.pdfUrl} />
-            </div>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+              </svg>
+              Leer libro
+            </Link>
           </div>
         )}
 

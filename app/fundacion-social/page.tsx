@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 const objetivos = [
   {
     letra: "A",
@@ -51,7 +53,7 @@ const sellos = [
 
 const zafiroI = [
   { portal: "portal-00", titulo: "Oficial de Cumplimiento en SG-SST", cno: "2262", nivel: "Maestro" },
-  { portal: "portal-01", titulo: "Promotor de Causas Sociales", cno: "4211", nivel: "Profesor" },
+  { portal: "portal-01", titulo: "Promotor de Causas Sociales", cno: "4211", nivel: "Profesor", href: "/fundacion-social/promotor-de-causas-sociales" },
   { portal: "portal-02", titulo: "Preceptor de Cultura Familiar", cno: "4215", nivel: "Profesor" },
   { portal: "portal-03", titulo: "Curso Básico de Economía Mutual", cno: "4211", nivel: "Profesor" },
 ];
@@ -59,9 +61,8 @@ const zafiroI = [
 const zafiroII = [
   { portal: "portal-04", titulo: "Monitor de Salidas Pedagógicas", nivel: "Profesor" },
   { portal: "portal-05", titulo: "Aromas de la Fe", nivel: "Maestro" },
-  { portal: "portal-07", titulo: "Habilidad Comunicativa en Castellano", nivel: "Profesor" },
+  { portal: "portal-07", titulo: "Habilidad Comunicativa en Castellano", nivel: "Profesor", href: "/fundacion-social/habilidad-comunicativa-castellano" },
   { portal: "portal-09", titulo: "Habilidad Comunicativa en Inglés", nivel: "Profesor" },
-  { portal: "portal-10", titulo: "Oficial de Cumplimiento en Econ. Mutual", nivel: "Tutor" },
   { portal: "portal-12", titulo: "Oficial de Modistería y Sastrería Artesanal", nivel: "Tutor" },
   { portal: "portal-14", titulo: "Operador de Redes Sociales y Webinar", nivel: "Técnico" },
   { portal: "portal-18", titulo: "Oficial de Panadería y Pastelería", nivel: "Técnico" },
@@ -365,42 +366,45 @@ export default function FundacionSocialPage() {
               className="rounded-xl overflow-hidden border"
               style={{ borderColor: "#B87333" }}
             >
-              {items.map((item, i) => (
-                <div
-                  key={i}
-                  className="flex items-center gap-4 px-5 py-3 border-b last:border-0"
-                  style={{
-                    borderColor: "#B87333",
-                    background: i % 2 === 0
-                      ? "linear-gradient(90deg, #e8dfc4, #ddd3b5)"
-                      : "linear-gradient(90deg, #ddd3b5, #d0c8a5)",
-                  }}
-                >
-                  <span
-                    className="text-xs font-bold w-20 flex-shrink-0"
-                    style={{ color: "#B87333", fontFamily: "var(--font-cinzel, serif)" }}
+              {items.map((item, i) => {
+                const rowStyle = {
+                  borderColor: "#B87333",
+                  background: i % 2 === 0
+                    ? "linear-gradient(90deg, #e8dfc4, #ddd3b5)"
+                    : "linear-gradient(90deg, #ddd3b5, #d0c8a5)",
+                };
+                const inner = (
+                  <>
+                    <span className="text-xs font-bold w-20 flex-shrink-0" style={{ color: "#B87333", fontFamily: "var(--font-cinzel, serif)" }}>
+                      {item.portal}
+                    </span>
+                    <span className="text-xs flex-1" style={{ color: "#1A3A5C", fontFamily: "var(--font-lora, serif)" }}>
+                      {item.titulo}
+                      {(item as any).href && <span className="ml-2 text-[#B87333]">→</span>}
+                    </span>
+                  </>
+                );
+                return (item as any).href ? (
+                  <Link
+                    key={i}
+                    href={(item as any).href}
+                    className="flex items-center gap-4 px-5 py-3 border-b last:border-0 hover:brightness-95 transition-all"
+                    style={rowStyle}
                   >
-                    {item.portal}
-                  </span>
-                  <span
-                    className="text-xs flex-1"
-                    style={{ color: "#1A3A5C", fontFamily: "var(--font-lora, serif)" }}
-                  >
-                    {item.titulo}
-                  </span>
-                  <span
-                    className="text-xs px-2 py-0.5 rounded-full flex-shrink-0"
-                    style={{
-                      background: "#1A3A5C",
-                      color: "#F5EDD6",
-                      fontFamily: "var(--font-cinzel, serif)",
-                      fontSize: "0.6rem",
-                    }}
-                  >
-                    {item.nivel}
-                  </span>
-                </div>
-              ))}
+                    {inner}
+                    <span className="text-xs px-2 py-0.5 rounded-full flex-shrink-0" style={{ background: "#1A3A5C", color: "#F5EDD6", fontFamily: "var(--font-cinzel, serif)", fontSize: "0.6rem" }}>
+                      {item.nivel}
+                    </span>
+                  </Link>
+                ) : (
+                  <div key={i} className="flex items-center gap-4 px-5 py-3 border-b last:border-0" style={rowStyle}>
+                    {inner}
+                    <span className="text-xs px-2 py-0.5 rounded-full flex-shrink-0" style={{ background: "#1A3A5C", color: "#F5EDD6", fontFamily: "var(--font-cinzel, serif)", fontSize: "0.6rem" }}>
+                      {item.nivel}
+                    </span>
+                  </div>
+                );
+              })}
             </div>
           </div>
         ))}

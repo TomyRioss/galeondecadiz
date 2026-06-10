@@ -19,6 +19,12 @@ const BOOK_PRINCIPAL = {
 
 const CATEGORIES = [
   {
+    label: "¿Dónde meteremos los pesebres?",
+    href: "/fondo-editorial/articulos/donde-meteremos-los-pesebres",
+    external: false,
+    desc: "Artículo de Álvaro Gallón Rodríguez · 14 de diciembre de 2025",
+  },
+  {
     label: "Canon Lector",
     href: "https://www.galeonadecadiz.org/Canon-Lector/",
     external: true,
