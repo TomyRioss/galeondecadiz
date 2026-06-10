@@ -23,6 +23,7 @@ const socialLinks = [
 const products = [
   {
     title: "Canon Lector",
+    href: "/tienda",
     initials: "CL",
     img: "https://images.pexels.com/photos/13061422/pexels-photo-13061422.jpeg",
     desc: "Obras esenciales para la formación lectora.",

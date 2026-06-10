@@ -71,9 +71,18 @@ export async function PUT(req: NextRequest) {
   if (data.pdfUrl !== undefined) updateData.pdfUrl = data.pdfUrl;
   if (data.activo !== undefined) updateData.activo = Boolean(data.activo);
   if (data.tipo !== undefined) updateData.tipo = data.tipo;
+  if (data.starred !== undefined) updateData.starred = Boolean(data.starred);
 
   try {
-    const book = await prisma.book.update({ where: { id }, data: updateData });
+    let book;
+    if (updateData.starred === true) {
+      [, book] = await prisma.$transaction([
+        prisma.book.updateMany({ where: { starred: true }, data: { starred: false } }),
+        prisma.book.update({ where: { id }, data: updateData }),
+      ]);
+    } else {
+      book = await prisma.book.update({ where: { id }, data: updateData });
+    }
     return NextResponse.json({ book });
   } catch (err) {
     console.error("[admin/libros PUT]", err);

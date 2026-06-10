@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, AlertCircle } from "lucide-react";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -33,12 +33,23 @@ export default function LoginForm() {
     }
   }
 
+  const inputStyle = {
+    background: "#fff",
+    border: "1.5px solid #B87333",
+    color: "#1A3A5C",
+    fontFamily: "var(--font-lora, serif)",
+    fontSize: "0.875rem",
+  };
+
+  const inputFocusClass =
+    "w-full px-4 py-3 rounded-md outline-none transition-all focus:ring-2 focus:ring-[#1F4FA3]/30 focus:border-[#1F4FA3]";
+
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-      <div className="flex flex-col gap-1.5">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+      <div className="flex flex-col gap-2">
         <label
           htmlFor="email"
-          className="text-xs tracking-widest uppercase"
+          className="text-[0.65rem] tracking-[0.2em] uppercase"
           style={{ color: "#1B6CA8", fontFamily: "var(--font-cinzel, serif)" }}
         >
           Correo electrónico
@@ -49,21 +60,16 @@ export default function LoginForm() {
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="px-4 py-3 rounded border text-sm outline-none transition-all"
-          style={{
-            background: "#fff",
-            border: "1px solid #B87333",
-            color: "#1A3A5C",
-            fontFamily: "var(--font-lora, serif)",
-          }}
+          className={inputFocusClass}
+          style={inputStyle}
           placeholder="admin@galeonadecadiz.org"
         />
       </div>
 
-      <div className="flex flex-col gap-1.5">
+      <div className="flex flex-col gap-2">
         <label
           htmlFor="password"
-          className="text-xs tracking-widest uppercase"
+          className="text-[0.65rem] tracking-[0.2em] uppercase"
           style={{ color: "#1B6CA8", fontFamily: "var(--font-cinzel, serif)" }}
         >
           Contraseña
@@ -75,19 +81,14 @@ export default function LoginForm() {
             required
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-4 py-3 pr-10 rounded border text-sm outline-none transition-all"
-            style={{
-              background: "#fff",
-              border: "1px solid #B87333",
-              color: "#1A3A5C",
-              fontFamily: "var(--font-lora, serif)",
-            }}
+            className={`${inputFocusClass} pr-11`}
+            style={inputStyle}
             placeholder="••••••••"
           />
           <button
             type="button"
             onClick={() => setShowPassword((v) => !v)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 transition-opacity opacity-50 hover:opacity-90"
+            className="absolute right-3 top-1/2 -translate-y-1/2 transition-opacity opacity-40 hover:opacity-80"
             style={{ color: "#1A3A5C" }}
             tabIndex={-1}
           >
@@ -97,23 +98,31 @@ export default function LoginForm() {
       </div>
 
       {error && (
-        <p
-          className="text-xs text-center py-2 px-3 rounded"
-          style={{ background: "#fde8e8", color: "#C0392B", fontFamily: "var(--font-lora, serif)" }}
+        <div
+          className="flex items-center gap-2.5 text-xs px-4 py-3 rounded-md"
+          style={{
+            background: "rgba(192,57,43,0.08)",
+            border: "1px solid rgba(192,57,43,0.25)",
+            color: "#C0392B",
+            fontFamily: "var(--font-lora, serif)",
+          }}
         >
+          <AlertCircle size={14} className="shrink-0" />
           {error}
-        </p>
+        </div>
       )}
 
       <button
         type="submit"
         disabled={loading}
-        className="py-3 rounded text-sm tracking-widest uppercase transition-all disabled:opacity-60"
+        className="py-3.5 rounded-md text-xs tracking-[0.25em] uppercase transition-all disabled:opacity-60 mt-1"
         style={{
-          background: "#1A3A5C",
+          background: loading
+            ? "#1A3A5C"
+            : "linear-gradient(135deg, #E8511A 0%, #B87333 100%)",
           color: "#F5EDD6",
           fontFamily: "var(--font-cinzel, serif)",
-          border: "1px solid #B87333",
+          letterSpacing: "0.25em",
         }}
       >
         {loading ? "Verificando..." : "Ingresar"}

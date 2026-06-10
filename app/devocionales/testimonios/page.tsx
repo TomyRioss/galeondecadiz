@@ -3,33 +3,15 @@
 import { useState } from "react";
 import { FaCheckCircle } from "react-icons/fa";
 
-const COMO_SE_ENTERO = [
-  "Redes Sociales",
-  "Referido",
-  "Búsqueda en Internet",
-  "Evento",
-  "Otro",
-];
-
-const SERVICIOS = [
-  { id: "envio_libros", label: "Envío de libros por mensajería" },
-  { id: "presupuesto_capacitaciones", label: "Presupuesto capacitaciones" },
-  { id: "asistencia_juridica", label: "Asistencia Jurídica" },
-  { id: "otros", label: "Otros" },
-];
-
-export default function ContactoPage() {
+export default function TestimoniosFormPage() {
   const [form, setForm] = useState({
     nombre: "",
     email: "",
     whatsapp: "",
     ciudad: "",
     pais: "",
-    como_se_entero: "",
-    publicacion: "",
-    cantidad_ejemplares: "",
-    servicios: [] as string[],
-    descripcion: "",
+    autoriza_publicacion: "",
+    testimonio: "",
     acepta_terminos: false,
   });
   const [loading, setLoading] = useState(false);
@@ -39,17 +21,7 @@ export default function ContactoPage() {
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
     const { name, value, type } = e.target;
     if (type === "checkbox") {
-      const checked = (e.target as HTMLInputElement).checked;
-      if (name === "acepta_terminos") {
-        setForm((prev) => ({ ...prev, acepta_terminos: checked }));
-      } else {
-        setForm((prev) => ({
-          ...prev,
-          servicios: checked
-            ? [...prev.servicios, value]
-            : prev.servicios.filter((s) => s !== value),
-        }));
-      }
+      setForm((prev) => ({ ...prev, [name]: (e.target as HTMLInputElement).checked }));
     } else {
       setForm((prev) => ({ ...prev, [name]: value }));
     }
@@ -58,7 +30,7 @@ export default function ContactoPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!form.acepta_terminos) {
-      setError("Debe aceptar los términos y condiciones.");
+      setError("Debés aceptar los términos y condiciones.");
       return;
     }
     setLoading(true);
@@ -72,8 +44,8 @@ export default function ContactoPage() {
           full_name: form.nombre,
           email: form.email,
           phone: form.whatsapp || null,
-          message: `${form.descripcion}\n\nCiudad: ${form.ciudad}\nPaís: ${form.pais}\nCómo se enteró: ${form.como_se_entero || "No especificado"}\nPublicación: ${form.publicacion || "No especificado"}\nCantidad ejemplares: ${form.cantidad_ejemplares || "No especificado"}\nServicios: ${form.servicios.join(", ") || "Ninguno"}`,
-          source: "contacto",
+          message: `${form.testimonio}\n\nCiudad: ${form.ciudad}\nPaís: ${form.pais}\nAutoriza publicación: ${form.autoriza_publicacion || "No especificado"}`,
+          source: "testimonios",
         }),
       });
 
@@ -89,11 +61,8 @@ export default function ContactoPage() {
         whatsapp: "",
         ciudad: "",
         pais: "",
-        como_se_entero: "",
-        publicacion: "",
-        cantidad_ejemplares: "",
-        servicios: [],
-        descripcion: "",
+        autoriza_publicacion: "",
+        testimonio: "",
         acepta_terminos: false,
       });
     } catch (err: any) {
@@ -111,10 +80,10 @@ export default function ContactoPage() {
           <div className="absolute inset-0 opacity-10" style={{ backgroundImage: "repeating-linear-gradient(45deg, #B87333 0px, #B87333 1px, transparent 1px, transparent 60px)" }} />
           <div className="absolute bottom-0 left-0 right-0 h-20 pointer-events-none" style={{ background: "linear-gradient(to top, #F5EDD6, transparent)" }} />
           <h1 className="relative text-3xl md:text-5xl font-bold leading-tight mb-4 max-w-3xl" style={{ color: "#F5EDD6", fontFamily: "var(--font-cinzel, serif)" }}>
-            Contacto Institucional
+            Testimonios
           </h1>
           <p className="relative text-sm md:text-base max-w-xl leading-relaxed mb-8" style={{ color: "#B87333", fontFamily: "var(--font-lora, serif)" }}>
-            Comuníquese con la Fundación Social Galeona de Cádiz
+            Comparta su experiencia con la Fundación
           </p>
           <div className="relative h-px w-48" style={{ background: "linear-gradient(90deg, transparent, #B87333, transparent)" }} />
         </section>
@@ -127,14 +96,14 @@ export default function ContactoPage() {
               ¡Gracias!
             </h2>
             <p className="text-sm leading-relaxed" style={{ color: "#1A3A5C", fontFamily: "var(--font-lora, serif)" }}>
-              Su mensaje fue enviado. Nos pondremos en contacto a la brevedad posible.
+              Tu testimonio fue enviado. Será revisado y publicado próximamente.
             </p>
             <button
               onClick={() => setSent(false)}
               className="mt-6 px-6 py-2.5 text-sm tracking-widest uppercase rounded-full transition-opacity hover:opacity-90"
               style={{ background: "#1A3A5C", color: "#F5EDD6", fontFamily: "var(--font-cinzel, serif)" }}
             >
-              Enviar otro mensaje
+              Enviar otro
             </button>
           </div>
         </section>
@@ -149,10 +118,10 @@ export default function ContactoPage() {
         <div className="absolute inset-0 opacity-10" style={{ backgroundImage: "repeating-linear-gradient(45deg, #B87333 0px, #B87333 1px, transparent 1px, transparent 60px)" }} />
         <div className="absolute bottom-0 left-0 right-0 h-20 pointer-events-none" style={{ background: "linear-gradient(to top, #F5EDD6, transparent)" }} />
         <h1 className="relative text-3xl md:text-5xl font-bold leading-tight mb-4 max-w-3xl" style={{ color: "#F5EDD6", fontFamily: "var(--font-cinzel, serif)" }}>
-          Contacto Institucional
+          Testimonios
         </h1>
         <p className="relative text-sm md:text-base max-w-xl leading-relaxed mb-8" style={{ color: "#B87333", fontFamily: "var(--font-lora, serif)" }}>
-          Comuníquese con la Fundación Social Galeona de Cádiz
+          Comparta su experiencia con la Fundación
         </p>
         <div className="relative h-px w-48" style={{ background: "linear-gradient(90deg, transparent, #B87333, transparent)" }} />
       </section>
@@ -237,70 +206,31 @@ export default function ContactoPage() {
                   style={{ background: "#fff", borderColor: "rgba(184,115,51,0.5)", color: "#1A3A5C", fontFamily: "var(--font-lora, serif)" }} />
               </div>
 
-              {/* ¿Cómo se enteró? */}
+              {/* Autorizo publicación */}
               <div className="grid grid-cols-1 md:grid-cols-[200px_1fr] items-center gap-2">
                 <label className="text-sm font-semibold" style={{ color: "#1A3A5C", fontFamily: "var(--font-cinzel, serif)" }}>
-                  ¿Cómo se enteró?
+                  Autorizo publicación
                 </label>
-                <select name="como_se_entero" value={form.como_se_entero} onChange={handleChange}
+                <select name="autoriza_publicacion" value={form.autoriza_publicacion} onChange={handleChange}
                   className="w-full rounded px-3 py-2 text-sm outline-none border focus:border-[#E8511A] transition-colors"
-                  style={{ background: "#fff", borderColor: "rgba(184,115,51,0.5)", color: form.como_se_entero ? "#1A3A5C" : "#B87333", fontFamily: "var(--font-lora, serif)" }}>
-                  <option value="" disabled>Seleccione...</option>
-                  {COMO_SE_ENTERO.map((o) => (
-                    <option key={o} value={o} style={{ color: "#1A3A5C" }}>{o}</option>
-                  ))}
+                  style={{ background: "#fff", borderColor: "rgba(184,115,51,0.5)", color: form.autoriza_publicacion ? "#1A3A5C" : "#B87333", fontFamily: "var(--font-lora, serif)" }}>
+                  <option value="" disabled>Seleccionar...</option>
+                  <option value="Sí">Sí</option>
+                  <option value="No">No</option>
                 </select>
               </div>
 
-              {/* Publicación solicitada */}
-              <div className="grid grid-cols-1 md:grid-cols-[200px_1fr] items-center gap-2">
-                <label className="text-sm font-semibold" style={{ color: "#1A3A5C", fontFamily: "var(--font-cinzel, serif)" }}>
-                  Publicación solicitada
-                </label>
-                <input name="publicacion" type="text" value={form.publicacion} onChange={handleChange}
-                  className="w-full rounded px-3 py-2 text-sm outline-none border focus:border-[#E8511A] transition-colors"
-                  style={{ background: "#fff", borderColor: "rgba(184,115,51,0.5)", color: "#1A3A5C", fontFamily: "var(--font-lora, serif)" }} />
-              </div>
-
-              {/* Cant. de ejemplares */}
-              <div className="grid grid-cols-1 md:grid-cols-[200px_1fr] items-center gap-2">
-                <label className="text-sm font-semibold" style={{ color: "#1A3A5C", fontFamily: "var(--font-cinzel, serif)" }}>
-                  Cant. de ejemplares
-                </label>
-                <input name="cantidad_ejemplares" type="number" min="1" value={form.cantidad_ejemplares} onChange={handleChange}
-                  className="w-full rounded px-3 py-2 text-sm outline-none border focus:border-[#E8511A] transition-colors"
-                  style={{ background: "#fff", borderColor: "rgba(184,115,51,0.5)", color: "#1A3A5C", fontFamily: "var(--font-lora, serif)" }} />
-              </div>
-
-              {/* Servicio solicitado */}
+              {/* Testimonio */}
               <div className="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-2">
                 <label className="text-sm font-semibold" style={{ color: "#1A3A5C", fontFamily: "var(--font-cinzel, serif)" }}>
-                  Servicio solicitado
+                  Testimonio
                 </label>
-                <div className="flex flex-col gap-1">
-                  {SERVICIOS.map((s) => (
-                    <label key={s.id} className="flex items-center gap-2 cursor-pointer">
-                      <input type="checkbox" name={s.id} value={s.id} checked={form.servicios.includes(s.id)} onChange={handleChange}
-                        className="flex-shrink-0" style={{ accentColor: "#1A3A5C" }} />
-                      <span className="text-sm" style={{ color: "#1A3A5C", fontFamily: "var(--font-lora, serif)" }}>
-                        {s.label}
-                      </span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-
-              {/* Descripción Solicitud */}
-              <div className="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-2">
-                <label className="text-sm font-semibold" style={{ color: "#1A3A5C", fontFamily: "var(--font-cinzel, serif)" }}>
-                  Descripción Solicitud
-                </label>
-                <textarea name="descripcion" rows={5} value={form.descripcion} onChange={handleChange}
+                <textarea name="testimonio" rows={8} required value={form.testimonio} onChange={handleChange}
                   className="w-full rounded px-3 py-2 text-sm outline-none border focus:border-[#E8511A] transition-colors resize-none"
                   style={{ background: "#fff", borderColor: "rgba(184,115,51,0.5)", color: "#1A3A5C", fontFamily: "var(--font-lora, serif)" }} />
               </div>
 
-              {/* Términos y condiciones */}
+              {/* Términos */}
               <div className="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-2">
                 <div />
                 <label className="flex items-start gap-2 cursor-pointer">

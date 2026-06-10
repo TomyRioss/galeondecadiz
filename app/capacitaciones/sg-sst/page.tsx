@@ -144,7 +144,7 @@ export default function SgSstPage() {
                   className="text-[0.65rem] px-3 py-1 rounded-full tracking-wide uppercase"
                   style={{
                     background: "#1A3A5C",
-                    color: "#B87333",
+                    color: "#FFFFFF",
                     fontFamily: "var(--font-cinzel, serif)",
                   }}
                 >

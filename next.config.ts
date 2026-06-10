@@ -14,6 +14,20 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: "/oraciones/:path*",
+        destination: "/devocionales/:path*",
+        permanent: true,
+      },
+      {
+        source: "/oraciones",
+        destination: "/devocionales",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

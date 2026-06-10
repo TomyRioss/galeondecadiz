@@ -19,6 +19,7 @@ model Book {
   authorImageUrl   String   @default("")
   authorBio        String   @default("") @db.Text
   activo      Boolean  @default(true)
+  starred     Boolean  @default(false)
   tipo        BookTipo @default(IMPRESO)
   createdAt   DateTime @default(now())
   orders      Order[]

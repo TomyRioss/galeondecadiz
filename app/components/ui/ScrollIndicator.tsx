@@ -4,10 +4,11 @@ import { useEffect, useState } from "react";
 import { ChevronDown } from "lucide-react";
 
 export default function ScrollIndicator() {
-  const [visible, setVisible] = useState(true);
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setVisible(window.scrollY < 80);
+    onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
