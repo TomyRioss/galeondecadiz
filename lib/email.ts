@@ -1,7 +1,5 @@
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY!);
-
 export interface OrderEmailParams {
   buyerName: string;
   buyerEmail: string;
@@ -14,6 +12,7 @@ export interface OrderEmailParams {
 }
 
 export async function sendOrderConfirmationEmail(params: OrderEmailParams) {
+  const resend = new Resend(process.env.RESEND_API_KEY!);
   const montoFormatted =
     params.moneda === "COP"
       ? `$${params.monto.toLocaleString("es-CO")} COP`

@@ -45,13 +45,6 @@ const products = [
     img: "https://images.pexels.com/photos/31846587/pexels-photo-31846587.jpeg",
     desc: "Arte y cultura con identidad institucional.",
   },
-  {
-    title: "Fondo Editorial",
-    initials: "FE",
-    img: "https://images.pexels.com/photos/1370295/pexels-photo-1370295.jpeg",
-    desc: "Publicaciones, libros y recursos editoriales.",
-    href: "/fondo-editorial",
-  },
 ];
 
 export default function Home() {
