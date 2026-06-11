@@ -517,7 +517,7 @@ export default function PreceptorCulturaFamiliarPage() {
             contactenos@galeonadecadiz.org
           </a>
           <a
-            href="https://wa.me/573112524239"
+            href="https://wa.me/573112524239?text=Cordial%20saludo%2C%20estoy%20interesado%20en%20el%20libro%20Nuestra%20Se%C3%B1ora%20de%20Chiquinquir%C3%A1%20de%20La%20Estrella."
             target="_blank"
             rel="noopener noreferrer"
             className="inline-block px-8 py-4 rounded-full font-semibold tracking-widest uppercase text-sm transition-opacity hover:opacity-90 border-2"

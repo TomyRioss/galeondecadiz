@@ -176,7 +176,7 @@ export default function ContactoPage() {
                   <span className="text-[0.65rem] tracking-[0.2em] uppercase font-semibold" style={{ color: "#B87333", fontFamily: "var(--font-cinzel, serif)" }}>
                     WhatsApp
                   </span>
-                  <a href="https://wa.me/573112524239" target="_blank" rel="noopener noreferrer" className="text-sm hover:opacity-80 transition-opacity" style={{ color: "#1A3A5C", fontFamily: "var(--font-lora, serif)" }}>
+                  <a href="https://wa.me/573112524239?text=Cordial%20saludo%2C%20estoy%20interesado%20en%20el%20libro%20Nuestra%20Se%C3%B1ora%20de%20Chiquinquir%C3%A1%20de%20La%20Estrella." target="_blank" rel="noopener noreferrer" className="text-sm hover:opacity-80 transition-opacity" style={{ color: "#1A3A5C", fontFamily: "var(--font-lora, serif)" }}>
                     311 2524239
                   </a>
                 </div>

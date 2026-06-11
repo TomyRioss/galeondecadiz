@@ -1,0 +1,85 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import Link from "next/link";
+import { FaHeart, FaWhatsapp } from "react-icons/fa6";
+
+const WA_NUMBER = "573112524239";
+
+export default function DonacionesGraciasPage() {
+  const params = useSearchParams();
+  const registered = useRef(false);
+  const [done, setDone] = useState(false);
+
+  useEffect(() => {
+    if (registered.current) return;
+    registered.current = true;
+
+    const paymentId = params.get("payment_id");
+    const status = params.get("status") ?? params.get("collection_status");
+
+    if (status !== "approved") { setDone(true); return; }
+
+    // MP passes metadata back via query params on auto_return
+    // We register the donation here on confirmed payment
+    const metadata = {
+      full_name: params.get("payer_email") ? "Donante" : "Donante",
+      email: params.get("payer_email") ?? "",
+      phone: null,
+      amount: params.get("transaction_amount") ?? "0",
+      message: `Pago MercadoPago #${paymentId}`,
+      accepted_terms: true,
+    };
+
+    fetch("/api/donations", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(metadata),
+    })
+      .catch((e) => console.error("[gracias] register error:", e))
+      .finally(() => setDone(true));
+  }, [params]);
+
+  return (
+    <div style={{ background: "#F5EDD6", minHeight: "100vh" }} className="flex items-center justify-center px-6 py-16">
+      <div
+        className="max-w-md w-full rounded-2xl p-8 text-center"
+        style={{ background: "linear-gradient(135deg, #e8dfc4, #d4c9a8)", border: "2px solid #B87333" }}
+      >
+        <FaHeart size={32} className="mx-auto mb-4" style={{ color: "#B87333" }} />
+        <h2
+          className="text-xl font-bold mb-3"
+          style={{ color: "#1A3A5C", fontFamily: "var(--font-cinzel, serif)" }}
+        >
+          ¡Gracias por tu donación!
+        </h2>
+        <p
+          className="text-sm mb-6"
+          style={{ color: "#1A3A5C", fontFamily: "var(--font-lora, serif)" }}
+        >
+          Tu pago fue procesado exitosamente. La Fundación Galeona de Cádiz agradece tu apoyo.
+        </p>
+        <div className="flex flex-col gap-3">
+          <a
+            href={`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent("Hola, acabo de realizar una donación en galeonadecadiz.org y quisiera confirmar el proceso.")}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full text-white text-sm font-semibold"
+            style={{ background: "#2E6B3E", fontFamily: "var(--font-cinzel, serif)" }}
+          >
+            <FaWhatsapp size={14} />
+            Confirmar por WhatsApp
+          </a>
+          <Link
+            href="/"
+            className="text-xs tracking-wide transition-colors hover:opacity-70"
+            style={{ color: "#B87333", fontFamily: "var(--font-cinzel, serif)" }}
+          >
+            Volver al inicio
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}

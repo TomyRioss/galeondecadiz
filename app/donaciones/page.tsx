@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
-import { FaHeart, FaWhatsapp } from "react-icons/fa6";
+import { useState, lazy, Suspense } from "react";
+import { FaHeart } from "react-icons/fa6";
 
-const WA_NUMBER = "";
+const MercadoPagoWallet = lazy(() => import("@/app/components/ui/MercadoPagoWallet"));
+
 const AMOUNTS = [10000, 20000, 50000, 100000];
 
 export default function DonacionesPage() {
@@ -16,8 +16,9 @@ export default function DonacionesPage() {
     message: "",
     accepted_terms: false,
   });
-  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [status, setStatus] = useState<"idle" | "loading" | "ready" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
+  const [preferenceId, setPreferenceId] = useState<string | null>(null);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
     const { name, value, type } = e.target;
@@ -36,16 +37,18 @@ export default function DonacionesPage() {
     setErrorMsg("");
     setStatus("loading");
     try {
-      const res = await fetch("/api/donations", {
+      const res = await fetch("/api/donations/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
       });
-      if (!res.ok) throw new Error("Error al registrar donación");
-      setStatus("success");
+      if (!res.ok) throw new Error("Error al crear pago");
+      const data = await res.json();
+      setPreferenceId(data.preference_id);
+      setStatus("ready");
     } catch (err) {
       console.error(err);
-      setErrorMsg("No se pudo registrar tu donación. Intentá de nuevo.");
+      setErrorMsg("No se pudo iniciar el pago. Intentá de nuevo.");
       setStatus("error");
     }
   }
@@ -60,50 +63,6 @@ export default function DonacionesPage() {
     color: "#1A3A5C",
     fontFamily: "var(--font-cinzel, serif)",
   };
-
-  if (status === "success") {
-    return (
-      <div style={{ background: "#F5EDD6", minHeight: "100vh" }} className="flex items-center justify-center px-6 py-16">
-        <div
-          className="max-w-md w-full rounded-2xl p-8 text-center"
-          style={{ background: "linear-gradient(135deg, #e8dfc4, #d4c9a8)", border: "2px solid #B87333" }}
-        >
-          <FaHeart size={32} className="mx-auto mb-4" style={{ color: "#B87333" }} />
-          <h2
-            className="text-xl font-bold mb-3"
-            style={{ color: "#1A3A5C", fontFamily: "var(--font-cinzel, serif)" }}
-          >
-            ¡Gracias por tu donación!
-          </h2>
-          <p
-            className="text-sm mb-6"
-            style={{ color: "#1A3A5C", fontFamily: "var(--font-lora, serif)" }}
-          >
-            Registramos tu intención de donación. Nos comunicaremos contigo para coordinar el proceso.
-          </p>
-          <div className="flex flex-col gap-3">
-            <a
-              href={`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent("Hola, acabo de registrar una donación en galeonadecadiz.org y quisiera confirmar el proceso.")}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full text-white text-sm font-semibold"
-              style={{ background: "#2E6B3E", fontFamily: "var(--font-cinzel, serif)" }}
-            >
-              <FaWhatsapp size={14} />
-              Confirmar por WhatsApp
-            </a>
-            <Link
-              href="/"
-              className="text-xs tracking-wide transition-colors hover:opacity-70"
-              style={{ color: "#B87333", fontFamily: "var(--font-cinzel, serif)" }}
-            >
-              Volver al inicio
-            </Link>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div style={{ background: "#F5EDD6", minHeight: "100vh" }}>
@@ -127,8 +86,8 @@ export default function DonacionesPage() {
         </p>
       </section>
 
-      {/* Texto institucional — placeholder hasta que cliente entregue texto definitivo (C10) */}
       <section className="max-w-3xl mx-auto px-6 py-12">
+        {/* Por qué donar */}
         <div
           className="rounded-2xl p-6 md:p-8 mb-10"
           style={{ background: "linear-gradient(135deg, #e8dfc4, #d4c9a8)", border: "2px solid #B87333" }}
@@ -153,10 +112,7 @@ export default function DonacionesPage() {
               del Fondo Editorial y el acceso libre a recursos culturales para quienes más
               lo necesitan.
             </p>
-            <p
-              className="text-xs italic"
-              style={{ color: "#B87333" }}
-            >
+            <p className="text-xs italic" style={{ color: "#B87333" }}>
               * Texto definitivo pendiente de entrega por el cliente.
             </p>
           </div>
@@ -289,17 +245,35 @@ export default function DonacionesPage() {
             </p>
           )}
 
-          <button
-            type="submit"
-            disabled={status === "loading"}
-            className="w-full py-3 rounded-full text-white font-semibold tracking-widest uppercase text-sm transition-opacity hover:opacity-90 disabled:opacity-50"
-            style={{
-              background: "linear-gradient(90deg, #E8511A, #B87333)",
-              fontFamily: "var(--font-cinzel, serif)",
-            }}
-          >
-            {status === "loading" ? "Registrando..." : "Registrar donación"}
-          </button>
+          {/* Wallet Brick aparece luego de crear preferencia */}
+          {status === "ready" && preferenceId ? (
+            <Suspense fallback={<div className="h-12 rounded-xl animate-pulse" style={{ background: "#009EE320" }} />}>
+              <MercadoPagoWallet
+                preferenceId={preferenceId}
+                onError={() => {
+                  setErrorMsg("Error al cargar el botón de pago. Intentá de nuevo.");
+                  setStatus("error");
+                }}
+              />
+            </Suspense>
+          ) : (
+            <button
+              type="submit"
+              disabled={status === "loading"}
+              className="w-full py-3 rounded-xl text-white font-bold text-sm transition-opacity hover:opacity-90 disabled:opacity-50"
+              style={{ background: "#009EE3", fontFamily: "var(--font-lora, serif)" }}
+            >
+              {status === "loading" ? "Preparando pago..." : (
+                <span className="flex items-center justify-center gap-2">
+                  <svg width="22" height="22" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="32" cy="32" r="32" fill="white"/>
+                    <path d="M13 32.8C13 22.4 21.4 14 31.8 14C37 14 41.7 16.1 45.1 19.6L39.3 25.4C37.5 23.7 35.1 22.7 32.5 22.7C27.2 22.7 22.8 27.1 22.8 32.4C22.8 37.7 27.2 42.1 32.5 42.1C36.6 42.1 40.1 39.6 41.5 36H32.5V27.9H50.7C51 29.5 51.2 31.2 51.2 32.8C51.2 43.2 42.8 51.6 32.4 51.6C22 51.6 13 43.2 13 32.8Z" fill="#009EE3"/>
+                  </svg>
+                  Continuar con MercadoPago
+                </span>
+              )}
+            </button>
+          )}
         </form>
       </section>
 

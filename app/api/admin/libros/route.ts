@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
   if (!await requireAdmin()) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const body = await req.json();
-  const { slug, nombre, autor, descripcion, precioCop, precioUsd, coverUrl, authorImageUrl, authorBio, pdfUrl, activo, tipo } = body;
+  const { slug, nombre, autor, descripcion, precioCop, precioUsd, coverUrl, authorImageUrl, authorBio, pdfUrl, activo, disponibleCompra, tipo, stock } = body;
 
   if (!slug || !nombre || !autor || !descripcion) {
     return NextResponse.json({ error: "Campos requeridos faltantes" }, { status: 400 });
@@ -38,7 +38,9 @@ export async function POST(req: NextRequest) {
         authorImageUrl: authorImageUrl || "",
         authorBio: authorBio || "",
         pdfUrl: pdfUrl || "",
+        stock: parseInt(stock) || 0,
         activo: Boolean(activo),
+        disponibleCompra: disponibleCompra !== undefined ? Boolean(disponibleCompra) : true,
         tipo: tipo || "IMPRESO",
       },
     });
@@ -70,8 +72,10 @@ export async function PUT(req: NextRequest) {
   if (data.authorBio !== undefined) updateData.authorBio = data.authorBio;
   if (data.pdfUrl !== undefined) updateData.pdfUrl = data.pdfUrl;
   if (data.activo !== undefined) updateData.activo = Boolean(data.activo);
+  if (data.disponibleCompra !== undefined) updateData.disponibleCompra = Boolean(data.disponibleCompra);
   if (data.tipo !== undefined) updateData.tipo = data.tipo;
   if (data.starred !== undefined) updateData.starred = Boolean(data.starred);
+  if (data.stock !== undefined) updateData.stock = parseInt(data.stock) || 0;
 
   try {
     let book;

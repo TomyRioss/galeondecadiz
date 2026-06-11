@@ -5,6 +5,11 @@
 ## Comunicación
 - Siempre invocar `/caveman ultra` skill al inicio de cada conversación.
 
+## Reutilización de Elementos
+- Antes de crear formularios, páginas o componentes nuevos, verificar si ya existe uno equivalente en el proyecto.
+- Si existe `/contacto`, usar ese en vez de crear `/fondo-editorial/solicitar` u otro duplicado.
+- Regla general: no duplicar rutas ni componentes con propósito equivalente.
+
 ## Manejo de Errores
 - Todo error debe tener: catch con log en consola + feedback visual al usuario (toast, banner, mensaje inline según contexto).
 

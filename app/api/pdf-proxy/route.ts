@@ -1,23 +1,30 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSupabaseAdmin } from "@/lib/supabase-server";
+
+const ALLOWED_HOST = "www.galeonadecadiz.org";
 
 export async function GET(req: NextRequest) {
-  const path = req.nextUrl.searchParams.get("path");
-  if (!path) return new NextResponse("path requerido", { status: 400 });
+  const url = req.nextUrl.searchParams.get("url");
+  if (!url) return new NextResponse("Missing url", { status: 400 });
 
-  const supabase = getSupabaseAdmin();
-  const { data, error } = await supabase.storage.from("pdfs").download(path);
-
-  if (error || !data) {
-    console.error("[pdf-proxy]", error);
-    return new NextResponse("PDF no encontrado", { status: 404 });
+  let parsed: URL;
+  try {
+    parsed = new URL(url);
+  } catch {
+    return new NextResponse("Invalid url", { status: 400 });
   }
 
-  const buffer = await data.arrayBuffer();
+  if (parsed.hostname !== ALLOWED_HOST) {
+    return new NextResponse("Forbidden", { status: 403 });
+  }
+
+  const res = await fetch(url, { cache: "force-cache" });
+  if (!res.ok) return new NextResponse("Upstream error", { status: res.status });
+
+  const buffer = await res.arrayBuffer();
   return new NextResponse(buffer, {
     headers: {
       "Content-Type": "application/pdf",
-      "Cache-Control": "private, max-age=3600",
+      "Cache-Control": "public, max-age=86400",
     },
   });
 }

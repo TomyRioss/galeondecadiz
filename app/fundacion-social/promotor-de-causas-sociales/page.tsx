@@ -144,7 +144,7 @@ export default function PromotorCausasSociales() {
           </p>
           <p className="text-sm" style={{ color: "#d4c9a8", fontFamily: "var(--font-lora, serif)" }}>
             WhatsApp:{" "}
-            <a href="https://wa.me/573112524239" target="_blank" rel="noopener noreferrer" className="underline" style={{ color: "#B87333" }}>
+            <a href="https://wa.me/573112524239?text=Cordial%20saludo%2C%20estoy%20interesado%20en%20el%20libro%20Nuestra%20Se%C3%B1ora%20de%20Chiquinquir%C3%A1%20de%20La%20Estrella." target="_blank" rel="noopener noreferrer" className="underline" style={{ color: "#B87333" }}>
               311 252 4239
             </a>
           </p>

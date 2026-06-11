@@ -2,6 +2,7 @@
 import { prisma } from "@/lib/prisma";
 import BookGrid from "@/app/components/tienda/BookGrid";
 import { FaWhatsapp } from "react-icons/fa6";
+import { ShoppingCart } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -22,6 +23,7 @@ export default async function TiendaPage() {
     precioCop: Number(b.precioCop),
     precioUsd: Number(b.precioUsd),
     coverUrl: b.coverUrl,
+    disponibleCompra: b.disponibleCompra,
   }));
 
   const WA_MSG = starred
@@ -30,140 +32,170 @@ export default async function TiendaPage() {
 
   return (
     <div style={{ background: "#F5EDD6", minHeight: "100vh" }}>
-      <section
-        className="py-16 px-6 text-center"
-        style={{ background: "#1A3A5C" }}
-      >
-        <h1
-          className="text-4xl md:text-5xl font-bold text-white mb-4"
-          style={{ fontFamily: "var(--font-cinzel, serif)" }}
-        >
+
+      {/* Hero */}
+      <section className="py-10 md:py-16 px-6 text-center" style={{ background: "#1A3A5C" }}>
+        <p className="text-[0.55rem] tracking-[0.35em] uppercase mb-2" style={{ color: "#B87333", fontFamily: "var(--font-cinzel, serif)" }}>
+          Fondo Editorial Galeona de Cádiz
+        </p>
+        <h1 className="text-3xl md:text-5xl font-bold text-white mb-2" style={{ fontFamily: "var(--font-cinzel, serif)" }}>
           Tienda
         </h1>
-        <p
-          className="text-lg max-w-xl mx-auto"
-          style={{ color: "#d4c9a8", fontFamily: "var(--font-lora, serif)" }}
-        >
-          Libros y publicaciones del Fondo Editorial Galeona de Cádiz
+        <p className="text-sm max-w-xl mx-auto" style={{ color: "#d4c9a8", fontFamily: "var(--font-lora, serif)" }}>
+          Libros y publicaciones del Fondo Editorial
         </p>
       </section>
 
-      {/* ── LIBRO DESTACADO ── */}
+      {/* Libro destacado */}
       {starred && (
-        <section className="max-w-5xl mx-auto px-6 pt-12 pb-2">
-          <p
-            className="text-[0.65rem] tracking-[0.3em] uppercase mb-4"
-            style={{ color: "#B87333", fontFamily: "var(--font-cinzel, serif)" }}
-          >
-            Fondo Editorial Galeona de Cádiz
+        <section className="max-w-5xl mx-auto px-4 pt-8 pb-2">
+          <p className="text-[0.55rem] tracking-[0.3em] uppercase mb-3" style={{ color: "#B87333", fontFamily: "var(--font-cinzel, serif)" }}>
+            ✦ Publicación destacada
           </p>
           <div
-            className="rounded-2xl p-6 md:p-8 flex flex-col md:flex-row gap-6 items-start"
+            className="rounded-2xl p-4 md:p-8"
             style={{
               background: "linear-gradient(135deg, #e8dfc4 0%, #d4c9a8 100%)",
               border: "2px solid #B87333",
               boxShadow: "0 4px 32px rgba(26,58,92,0.10)",
             }}
           >
-            {/* Portada */}
-            <div
-              className="flex-shrink-0 rounded-xl overflow-hidden"
-              style={{ border: "2px solid #B87333", width: 140, height: 190, boxShadow: "0 4px 20px rgba(26,58,92,0.18)" }}
-            >
-              {starred.coverUrl ? (
-                <Image
-                  src={starred.coverUrl}
-                  alt={starred.nombre}
-                  width={140}
-                  height={190}
-                  className="object-cover w-full h-full"
-                  priority
-                />
-              ) : (
-                <div className="w-full h-full flex flex-col items-center justify-center gap-2" style={{ background: "#1A3A5C" }}>
-                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#B87333" strokeWidth="1.5"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-                  <span className="text-[0.55rem] text-center px-2" style={{ color: "#B87333", fontFamily: "var(--font-cinzel, serif)" }}>Portada próximamente</span>
-                </div>
-              )}
-            </div>
+            {/* Layout: row en mobile y desktop */}
+            <div className="flex flex-row gap-4 md:gap-8 items-start">
 
-            {/* Info */}
-            <div className="flex flex-col gap-3 flex-1">
-              <h2
-                className="text-2xl md:text-3xl font-bold leading-tight"
-                style={{ color: "#1A3A5C", fontFamily: "var(--font-cinzel, serif)" }}
+              {/* Portada — fija, no encoge */}
+              <div
+                className="flex-shrink-0 rounded-xl overflow-hidden"
+                style={{
+                  border: "2px solid #B87333",
+                  width: 100, height: 136,
+                  boxShadow: "0 4px 20px rgba(26,58,92,0.18)",
+                }}
               >
-                {starred.nombre}
-              </h2>
-              {starred.descripcion && (
-                <p
-                  className="text-sm leading-relaxed line-clamp-3"
-                  style={{ color: "#1A3A5C", fontFamily: "var(--font-lora, serif)" }}
-                >
-                  {starred.descripcion}
-                </p>
-              )}
-              {Number(starred.precioCop) > 0 && (
-                <p className="text-base font-bold" style={{ color: "#B87333", fontFamily: "var(--font-cinzel, serif)" }}>
-                  ${Number(starred.precioCop).toLocaleString("es-CO")} COP
-                  {Number(starred.precioUsd) > 0 && (
-                    <span className="text-sm font-normal ml-3" style={{ color: "#8a7a5a" }}>
-                      ${Number(starred.precioUsd).toFixed(2)} USD
-                    </span>
-                  )}
-                </p>
-              )}
-              <div className="flex flex-wrap gap-3 mt-1">
-                <Link
-                  href={`/tienda/${starred.slug}`}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold tracking-wide uppercase transition-opacity hover:opacity-90"
-                  style={{ background: "linear-gradient(90deg, #E8511A, #B87333)", color: "#F5EDD6", fontFamily: "var(--font-cinzel, serif)" }}
-                >
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-                  Ver ficha editorial
-                </Link>
-                {starred.pdfUrl && (
-                  <Link
-                    href={`/tienda/${starred.slug}/preview`}
-                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold tracking-wide uppercase transition-opacity hover:opacity-90"
-                    style={{ background: "#1A3A5C", color: "#F5EDD6", fontFamily: "var(--font-cinzel, serif)" }}
-                  >
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                    Leer e-book
-                  </Link>
+                {starred.coverUrl ? (
+                  <Image
+                    src={starred.coverUrl}
+                    alt={starred.nombre}
+                    width={100}
+                    height={136}
+                    className="object-cover w-full h-full"
+                    priority
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center" style={{ background: "#1A3A5C" }}>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#B87333" strokeWidth="1.5">
+                      <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+                      <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+                    </svg>
+                  </div>
                 )}
-                <a
-                  href={`https://wa.me/573112524239?text=${WA_MSG}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold tracking-wide uppercase transition-opacity hover:opacity-90"
-                  style={{ background: "#2E6B3E", color: "#F5EDD6", fontFamily: "var(--font-cinzel, serif)" }}
+              </div>
+
+              {/* Info */}
+              <div className="flex flex-col gap-2 flex-1 min-w-0">
+                <h2
+                  className="text-lg md:text-3xl font-bold leading-tight"
+                  style={{ color: "#1A3A5C", fontFamily: "var(--font-cinzel, serif)" }}
                 >
-                  <FaWhatsapp size={14} />
-                  Comprar por WhatsApp
-                </a>
+                  {starred.nombre}
+                </h2>
+
+                {starred.descripcion && (
+                  <p
+                    className="text-xs md:text-sm leading-relaxed line-clamp-2 md:line-clamp-3 hidden xs:block"
+                    style={{ color: "#1A3A5C", fontFamily: "var(--font-lora, serif)" }}
+                  >
+                    {starred.descripcion}
+                  </p>
+                )}
+
+                {/* Precio */}
+                {Number(starred.precioCop) > 0 && (
+                  <div className="flex items-baseline gap-2 flex-wrap">
+                    <span className="text-base font-bold" style={{ color: "#B87333", fontFamily: "var(--font-cinzel, serif)" }}>
+                      ${Number(starred.precioCop).toLocaleString("es-CO")}
+                      <span className="text-xs font-normal ml-1" style={{ color: "#8a7a5a" }}>COP</span>
+                    </span>
+                    {Number(starred.precioUsd) > 0 && (
+                      <span className="text-xs" style={{ color: "#8a7a5a", fontFamily: "var(--font-lora, serif)" }}>
+                        ${Number(starred.precioUsd).toFixed(2)} USD
+                      </span>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
+
+            {/* Descripción visible solo en mobile debajo del row */}
+            {starred.descripcion && (
+              <p
+                className="text-xs leading-relaxed line-clamp-3 mt-3 md:hidden"
+                style={{ color: "#1A3A5C", fontFamily: "var(--font-lora, serif)" }}
+              >
+                {starred.descripcion}
+              </p>
+            )}
+
+            {/* Botones */}
+            <div className="grid grid-cols-2 gap-2 mt-4 md:flex md:flex-wrap md:gap-3">
+              <Link
+                href={`/tienda/${starred.slug}`}
+                className="flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl text-xs font-semibold tracking-wide uppercase transition-opacity hover:opacity-90"
+                style={{ background: "#1A3A5C", color: "#F5EDD6", fontFamily: "var(--font-cinzel, serif)" }}
+              >
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+                  <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+                </svg>
+                Ver ficha
+              </Link>
+
+              {starred.pdfUrl && (
+                <Link
+                  href={`/tienda/${starred.slug}/preview`}
+                  className="flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl text-xs font-semibold tracking-wide uppercase transition-opacity hover:opacity-90"
+                  style={{ border: "1.5px solid #1A3A5C", color: "#1A3A5C", background: "transparent", fontFamily: "var(--font-cinzel, serif)" }}
+                >
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                  </svg>
+                  E-Book
+                </Link>
+              )}
+
+              {starred.disponibleCompra && (
+                <Link
+                  href={`/checkout?slug=${starred.slug}`}
+                  className="flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl text-xs font-semibold tracking-wide uppercase transition-opacity hover:opacity-90"
+                  style={{ background: "linear-gradient(90deg, #E8511A, #B87333)", color: "#F5EDD6", fontFamily: "var(--font-cinzel, serif)" }}
+                >
+                  <ShoppingCart size={12} />
+                  Comprar
+                </Link>
+              )}
+
+              <a
+                href={`https://wa.me/573112524239?text=${WA_MSG}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl text-xs font-semibold tracking-wide uppercase transition-opacity hover:opacity-90"
+                style={{ background: "#2E6B3E", color: "#F5EDD6", fontFamily: "var(--font-cinzel, serif)" }}
+              >
+                <FaWhatsapp size={12} />
+                WhatsApp
+              </a>
+            </div>
+
           </div>
         </section>
       )}
 
-      <section className="max-w-6xl mx-auto px-6 py-12">
+      {/* Grid de libros */}
+      <section className="max-w-6xl mx-auto px-4 py-10">
         <BookGrid books={booksForGrid} />
-
-        <div className="flex justify-center mt-10">
-          <a
-            href="https://wa.me/?text=Hola%2C%20me%20interesa%20un%20libro%20del%20Fondo%20Editorial%20Galeona."
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-white font-semibold text-sm tracking-wide transition-opacity hover:opacity-90"
-            style={{ background: "#2E6B3E", fontFamily: "var(--font-cinzel, serif)" }}
-          >
-            <FaWhatsapp size={16} />
-            Contactar por WhatsApp
-          </a>
-        </div>
       </section>
+
     </div>
   );
 }

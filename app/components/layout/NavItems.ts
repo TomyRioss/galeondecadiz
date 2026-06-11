@@ -21,18 +21,16 @@ export const NAV_ITEMS: NavItem[] = [
       { label: "Fundación Social Galeona de Cádiz", href: "/fundacion-social" },
       { label: "Escuela de Nazaret",                href: "/escuela-de-nazaret" },
       { label: "Contacto institucional",            href: "/contacto" },
+      { label: "Sufragio Exequial",                 href: "/exequial" },
     ],
   },
   {
     label: "Fondo editorial",
     href: "/libros-y-arte",
     children: [
-      { label: "Canon Lector",                                      href: "/tienda" },
-      { label: "Libros disponibles",                               href: "#" },
-      { label: "E-books",                                          href: "#" },
-      { label: "Ficha del libro Nuestra Señora de Chiquinquirá",   href: "#" },
-      { label: "Acceso a compra del libro",                        href: "#" },
-      { label: "Acceso a descarga del e-book",                     href: "#" },
+      { label: "Canon Lector",          href: "/tienda" },
+      { label: "Lienzos Didácticos",    href: "/fondo-editorial/lienzos-didacticos" },
+      { label: "Catálogo Wayuu",        href: "/fondo-editorial/catalogo-wayuu" },
     ],
   },
   {
@@ -66,11 +64,11 @@ export const NAV_ITEMS: NavItem[] = [
     label: "Tienda",
     href: "/tienda",
     children: [
-      { label: "Comprar libro impreso",   href: "/tienda/comprar-libro" },
+      { label: "Comprar libro impreso",   href: "/tienda" },
+      { label: "Descargar E-Book",        href: "/tienda/nuestra-senora-de-chiquinquira-de-la-estrella" },
       { label: "Leer E-Book", href: "/tienda/ebook" },
-      { label: "WhatsApp de soporte",     href: "/tienda/soporte" },
-      { label: "Confirmación de compra",  href: "/tienda/confirmacion" },
-      { label: "Registro de pedido",      href: "/tienda/pedido" },
+      { label: "WhatsApp de soporte",     href: "https://wa.me/573112524239?text=Cordial%20saludo%2C%20estoy%20interesado%20en%20el%20libro%20Nuestra%20Se%C3%B1ora%20de%20Chiquinquir%C3%A1%20de%20La%20Estrella." },
+      { label: "Ser donante",             href: "/donaciones" },
     ],
   },
   {

@@ -170,6 +170,41 @@ export default function EscuelaNazaretPage() {
         />
       </section>
 
+      {/* PDF Plegable EDN */}
+      <section className="max-w-5xl mx-auto px-4 py-12">
+        <div className="flex items-start gap-4 mb-6">
+          <div className="w-1.5 h-14 rounded-full flex-shrink-0" style={{ background: "linear-gradient(180deg, #E8511A, #B87333)" }} />
+          <div>
+            <h2 className="text-xl font-bold" style={{ color: "#1A3A5C", fontFamily: "var(--font-cinzel, serif)" }}>
+              Plegable Escuela de Nazaret
+            </h2>
+            <p className="text-sm mt-0.5" style={{ color: "#B87333", fontFamily: "var(--font-lora, serif)" }}>
+              Conocé todo sobre la comunidad académica mentora
+            </p>
+          </div>
+        </div>
+        <div className="rounded-2xl overflow-hidden border-2" style={{ borderColor: "#B87333", boxShadow: "0 4px 32px rgba(26,58,92,0.12)" }}>
+          <iframe
+            src="/plegable-edn.pdf"
+            title="Plegable Escuela de Nazaret"
+            className="w-full"
+            style={{ height: "70vh", minHeight: 480 }}
+          />
+        </div>
+        <div className="flex justify-center mt-4">
+          <a
+            href="/plegable-edn.pdf"
+            download
+            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-xs font-semibold tracking-[0.15em] uppercase transition-opacity hover:opacity-90"
+            style={{ background: "linear-gradient(90deg, #E8511A, #B87333)", color: "#F5EDD6", fontFamily: "var(--font-cinzel, serif)" }}
+          >
+            Descargar PDF
+          </a>
+        </div>
+      </section>
+
+      <Separador />
+
       {/* INTRO — MEMBRESÍA */}
       <section className="max-w-4xl mx-auto px-4 py-14">
         <SectionHeader

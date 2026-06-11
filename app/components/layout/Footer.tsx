@@ -30,8 +30,8 @@ const mainLinks = [
 ];
 
 const legalLinks = [
-  { label: "Política de privacidad", href: "/privacidad" },
-  { label: "Términos de uso",        href: "/terminos" },
+  { label: "Política de privacidad", href: "https://docs.google.com/viewer?url=https://www.galeonadecadiz.org/pdf/pp-5.pdf" },
+  { label: "Términos de uso",        href: "https://docs.google.com/viewer?url=https://www.galeonadecadiz.org/pdf/pp-5.pdf" },
 ];
 
 export default function Footer() {
@@ -80,7 +80,7 @@ export default function Footer() {
               </div>
               <div className="flex items-center gap-2 text-white/80 text-xs" style={{ fontFamily: "var(--font-lora, serif)" }}>
                 <FaWhatsapp className="flex-shrink-0 text-[#B87333]" size={13} />
-                <a href="https://wa.me/" className="hover:text-[#E8511A] transition-colors">
+                <a href="https://wa.me/573112524239?text=Cordial%20saludo%2C%20estoy%20interesado%20en%20el%20libro%20Nuestra%20Se%C3%B1ora%20de%20Chiquinquir%C3%A1%20de%20La%20Estrella." target="_blank" rel="noopener noreferrer" className="hover:text-[#E8511A] transition-colors">
                   WhatsApp
                 </a>
               </div>

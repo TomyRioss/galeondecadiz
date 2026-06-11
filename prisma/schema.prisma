@@ -18,8 +18,10 @@ model Book {
   coverUrl         String   @default("")
   authorImageUrl   String   @default("")
   authorBio        String   @default("") @db.Text
-  activo      Boolean  @default(true)
-  starred     Boolean  @default(false)
+  stock            Int      @default(0)
+  activo           Boolean  @default(true)
+  disponibleCompra Boolean  @default(true)
+  starred          Boolean  @default(false)
   tipo        BookTipo @default(IMPRESO)
   createdAt   DateTime @default(now())
   orders      Order[]

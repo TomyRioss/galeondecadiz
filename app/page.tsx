@@ -17,7 +17,7 @@ const socialLinks = [
   { name: "Spotify",       href: "#", Icon: FaSpotify },
   { name: "Speaker",        href: "#", Icon: SiSpeakerdeck, label: "Speaker" },
   { name: "Google Podcast", href: "#", Icon: SiGooglecast,  label: "G. Podcast" },
-  { name: "WhatsApp",       href: "https://wa.me/", Icon: FaWhatsapp, label: "WhatsApp" },
+  { name: "WhatsApp",       href: "https://wa.me/573112524239?text=Cordial%20saludo%2C%20estoy%20interesado%20en%20el%20libro%20Nuestra%20Se%C3%B1ora%20de%20Chiquinquir%C3%A1%20de%20La%20Estrella.", Icon: FaWhatsapp, label: "WhatsApp" },
 ];
 
 const products = [

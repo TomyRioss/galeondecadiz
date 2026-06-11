@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { BookOpen, Plus, Star, Eye, EyeOff, Pencil } from "lucide-react";
+import { BookOpen, Plus, Star, Eye, EyeOff, Pencil, ShoppingCart } from "lucide-react";
 
 interface Book {
   id: string;
@@ -16,9 +17,11 @@ interface Book {
   authorImageUrl: string;
   authorBio: string;
   pdfUrl: string;
+  stock: number;
   activo: boolean;
   starred: boolean;
   tipo: string;
+  disponibleCompra: boolean;
 }
 
 const EMPTY_FORM = {
@@ -47,10 +50,10 @@ const labelCls = "text-[0.6rem] tracking-[0.2em] uppercase font-semibold";
 const labelColor = { color: "#B87333", fontFamily: "var(--font-cinzel, serif)" };
 
 export default function LibrosPage() {
+  const router = useRouter();
   const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
-  const [editId, setEditId] = useState<string | null>(null);
   const [form, setForm] = useState(EMPTY_FORM);
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState<{ type: "ok" | "err"; text: string } | null>(null);
@@ -73,27 +76,6 @@ export default function LibrosPage() {
 
   function openNew() {
     setForm(EMPTY_FORM);
-    setEditId(null);
-    setShowForm(true);
-    setMsg(null);
-  }
-
-  function openEdit(b: Book) {
-    setForm({
-      slug: b.slug,
-      nombre: b.nombre,
-      autor: b.autor,
-      descripcion: b.descripcion,
-      precioCop: String(b.precioCop),
-      precioUsd: String(b.precioUsd),
-      coverUrl: b.coverUrl,
-      authorImageUrl: b.authorImageUrl ?? "",
-      authorBio: b.authorBio ?? "",
-      pdfUrl: b.pdfUrl ?? "",
-      activo: b.activo,
-      tipo: b.tipo as "IMPRESO" | "EBOOK" | "AMBOS",
-    });
-    setEditId(b.id);
     setShowForm(true);
     setMsg(null);
   }
@@ -115,7 +97,7 @@ export default function LibrosPage() {
         ...prev,
         [name]: type === "checkbox" ? (e.target as HTMLInputElement).checked : value,
       };
-      if (name === "nombre" && editId === null) updated.slug = toSlug(value);
+      if (name === "nombre") updated.slug = toSlug(value);
       return updated as typeof EMPTY_FORM;
     });
   }
@@ -145,15 +127,14 @@ export default function LibrosPage() {
     setMsg(null);
     try {
       const res = await fetch("/api/admin/libros", {
-        method: editId ? "PUT" : "POST",
+        method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: editId, ...form }),
+        body: JSON.stringify(form),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Error");
-      setMsg({ type: "ok", text: editId ? "Libro actualizado." : "Libro creado." });
+      setMsg({ type: "ok", text: "Libro creado." });
       setShowForm(false);
-      setEditId(null);
       load();
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Error desconocido";
@@ -233,7 +214,7 @@ export default function LibrosPage() {
           }}
         >
           <h2 className="text-lg font-bold mb-6" style={{ color: "#1A3A5C", fontFamily: "var(--font-cinzel, serif)" }}>
-            {editId ? "Editar libro" : "Nuevo libro"}
+            {"Nuevo libro"}
           </h2>
           <form onSubmit={handleSubmit} className="flex flex-col gap-5">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -283,7 +264,7 @@ export default function LibrosPage() {
                       }}
                     />
                   </label>
-                  {(form as Record<string, unknown>)[field] && (
+                  {!!(form as Record<string, unknown>)[field] && (
                     <button
                       type="button"
                       onClick={() => setForm((prev) => ({ ...prev, [field]: "" }))}
@@ -383,7 +364,7 @@ export default function LibrosPage() {
                 className="flex-1 py-2.5 rounded-full text-sm font-semibold transition-all hover:opacity-90 disabled:opacity-50"
                 style={{ background: "linear-gradient(90deg, #E8511A, #B87333)", color: "#F5EDD6", fontFamily: "var(--font-cinzel, serif)" }}
               >
-                {saving ? "Guardando…" : editId ? "Guardar cambios" : "Crear libro"}
+                {saving ? "Guardando…" : "Crear libro"}
               </button>
               <button
                 type="button"
@@ -476,18 +457,43 @@ export default function LibrosPage() {
                   >
                     {b.tipo}
                   </span>
+                  <span
+                    className="text-[0.55rem] px-2 py-0.5 rounded-full font-semibold tracking-wider uppercase flex items-center gap-1"
+                    style={{
+                      background: (b.stock ?? 0) > 0 ? "#2E6B3E18" : "#C0392B18",
+                      color: (b.stock ?? 0) > 0 ? "#2E6B3E" : "#C0392B",
+                      border: `1px solid ${(b.stock ?? 0) > 0 ? "#2E6B3E40" : "#C0392B40"}`,
+                      fontFamily: "var(--font-cinzel, serif)",
+                    }}
+                  >
+                    Stock: {b.stock ?? 0}
+                  </span>
+                  {b.disponibleCompra && (
+                    <span
+                      className="text-[0.55rem] px-2 py-0.5 rounded-full font-semibold tracking-wider uppercase flex items-center gap-1"
+                      style={{
+                        background: "#1A3A5C18",
+                        color: "#1A3A5C",
+                        border: "1px solid #1A3A5C30",
+                        fontFamily: "var(--font-cinzel, serif)",
+                      }}
+                    >
+                      <ShoppingCart size={10} />
+                      Comprable
+                    </span>
+                  )}
                 </div>
               </div>
 
               {/* Acciones */}
               <div className="flex items-center gap-2 flex-shrink-0 opacity-60 group-hover:opacity-100 transition-opacity">
                 <button
-                  onClick={() => openEdit(b)}
+                  onClick={() => router.push(`/admin/libros/${b.id}`)}
                   title="Editar"
                   className="w-8 h-8 flex items-center justify-center rounded-full transition-colors hover:bg-white/50"
                   style={{ color: "#1A3A5C" }}
                 >
-                  <Pencil size={13} />
+                  <Pencil size={18} />
                 </button>
                 <button
                   onClick={() => toggleActivo(b)}
@@ -495,7 +501,7 @@ export default function LibrosPage() {
                   className="w-8 h-8 flex items-center justify-center rounded-full transition-colors hover:bg-white/50"
                   style={{ color: b.activo ? "#2E6B3E" : "#C0392B" }}
                 >
-                  {b.activo ? <Eye size={13} /> : <EyeOff size={13} />}
+                  {b.activo ? <Eye size={18} /> : <EyeOff size={18} />}
                 </button>
                 <button
                   onClick={() => toggleStarred(b)}
@@ -503,7 +509,7 @@ export default function LibrosPage() {
                   className="w-8 h-8 flex items-center justify-center rounded-full transition-colors hover:bg-white/50"
                   style={{ color: b.starred ? "#C9A447" : "#1A3A5C" }}
                 >
-                  <Star size={13} fill={b.starred ? "#C9A447" : "none"} />
+                  <Star size={18} fill={b.starred ? "#C9A447" : "none"} />
                 </button>
               </div>
             </div>

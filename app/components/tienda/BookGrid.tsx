@@ -9,6 +9,8 @@ interface Book {
   precioCop: number;
   precioUsd: number;
   coverUrl: string;
+  disponibleCompra?: boolean;
+  stock?: number;
 }
 
 interface BookGridProps {

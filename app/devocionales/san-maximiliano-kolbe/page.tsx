@@ -107,12 +107,6 @@ export default function SanMaximilianoKolbePage() {
 
       {/* FOOTER */}
       <section className="max-w-2xl mx-auto px-4 pb-14 flex justify-center">
-        <p
-          className="text-xs tracking-[0.2em]"
-          style={{ color: "#B87333", fontFamily: "var(--font-cinzel, serif)" }}
-        >
-          www.galeonadecadiz.org/devocionales
-        </p>
       </section>
 
     </div>

@@ -17,11 +17,10 @@ async function getBookCover(slug: string): Promise<string | null> {
     const hdrs = await headers();
     const host = hdrs.get("host") ?? "localhost:3000";
     const protocol = host.startsWith("localhost") ? "http" : "https";
-    const res = await fetch(`${protocol}://${host}/api/admin/libros`, { cache: "no-store" });
+    const res = await fetch(`${protocol}://${host}/api/libros/${slug}`, { cache: "no-store" });
     if (!res.ok) return null;
     const data = await res.json();
-    const book = (data.books ?? []).find((b: { slug: string; coverUrl?: string }) => b.slug === slug);
-    return book?.coverUrl ?? null;
+    return data.book?.coverUrl ?? null;
   } catch {
     return null;
   }
@@ -32,15 +31,15 @@ const ACCESOS = [
     icon: FaScroll,
     label: "Canon Lector",
     desc: "Obras esenciales para la formación lectora institucional.",
-    href: "https://www.galeonadecadiz.org/Canon-Lector/",
-    external: true,
+    href: "/tienda",
+    external: false,
     light: true,
   },
   {
     icon: FaDownload,
     label: "E-Books",
     desc: "Leé y descargá nuestras publicaciones digitales.",
-    href: "/tienda/ebook",
+    href: "/tienda",
     external: false,
     light: false,
   },
@@ -279,30 +278,20 @@ export default async function FondoEditorialPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {ACCESOS.map((item) => {
             const Icon = item.icon;
-            const Wrapper = item.external ? "a" : Link;
-            const extraProps = item.external
-              ? { href: item.href, target: "_blank", rel: "noopener noreferrer" }
-              : { href: item.href };
-
-            return (
-              <Wrapper
-                key={item.label}
-                {...(extraProps as never)}
-                className="flex flex-col gap-3 p-6 rounded-2xl transition-all hover:-translate-y-1 hover:shadow-lg"
-                style={
-                  item.light
-                    ? {
-                        background: "linear-gradient(135deg, #e8dfc4 0%, #d4c9a8 100%)",
-                        border: "2px solid #B87333",
-                        boxShadow: "0 2px 16px rgba(26,58,92,0.06)",
-                      }
-                    : {
-                        background: "linear-gradient(135deg, #1A3A5C, #1F4FA3)",
-                        border: "2px solid #B87333",
-                        boxShadow: "0 2px 16px rgba(26,58,92,0.12)",
-                      }
+            const cardStyle = item.light
+              ? {
+                  background: "linear-gradient(135deg, #e8dfc4 0%, #d4c9a8 100%)",
+                  border: "2px solid #B87333",
+                  boxShadow: "0 2px 16px rgba(26,58,92,0.06)",
                 }
-              >
+              : {
+                  background: "linear-gradient(135deg, #1A3A5C, #1F4FA3)",
+                  border: "2px solid #B87333",
+                  boxShadow: "0 2px 16px rgba(26,58,92,0.12)",
+                };
+            const cardClass = "flex flex-col gap-3 p-6 rounded-2xl transition-all hover:-translate-y-1 hover:shadow-lg";
+            const inner = (
+              <>
                 <div
                   className="w-10 h-10 rounded-full flex items-center justify-center"
                   style={{
@@ -334,7 +323,16 @@ export default async function FondoEditorialPage() {
                     {item.desc}
                   </p>
                 </div>
-              </Wrapper>
+              </>
+            );
+            return item.external ? (
+              <a key={item.label} href={item.href} target="_blank" rel="noopener noreferrer" className={cardClass} style={cardStyle}>
+                {inner}
+              </a>
+            ) : (
+              <Link key={item.label} href={item.href} className={cardClass} style={cardStyle}>
+                {inner}
+              </Link>
             );
           })}
         </div>
