@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 
 type BookData = { nombre: string; precioCop: number; precioUsd: number; coverUrl: string | null };
 
-export default function CheckoutPage() {
+function CheckoutContent() {
   const searchParams = useSearchParams();
   const slug = searchParams.get("slug");
   const [book, setBook] = useState<BookData | null>(null);
@@ -594,5 +594,13 @@ export default function CheckoutPage() {
         </div>
       </div>
     </>
+  );
+}
+
+export default function CheckoutPage() {
+  return (
+    <Suspense fallback={<div style={{ background: "#F5EDD6", minHeight: "100vh" }} />}>
+      <CheckoutContent />
+    </Suspense>
   );
 }

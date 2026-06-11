@@ -1,13 +1,13 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { FaHeart, FaWhatsapp } from "react-icons/fa6";
 
 const WA_NUMBER = "573112524239";
 
-export default function DonacionesGraciasPage() {
+function DonacionesGraciasContent() {
   const params = useSearchParams();
   const registered = useRef(false);
   const [done, setDone] = useState(false);
@@ -81,5 +81,13 @@ export default function DonacionesGraciasPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function DonacionesGraciasPage() {
+  return (
+    <Suspense fallback={<div style={{ background: "#F5EDD6", minHeight: "100vh" }} />}>
+      <DonacionesGraciasContent />
+    </Suspense>
   );
 }
