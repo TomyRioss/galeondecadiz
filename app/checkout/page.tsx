@@ -51,27 +51,31 @@ export default function CheckoutPage() {
       setError("Debe aceptar el tratamiento de datos personales.");
       return;
     }
+    if (!slug) {
+      setError("No se encontró el libro. Volvé a la tienda.");
+      return;
+    }
     setLoading(true);
     setError("");
     try {
-      const res = await fetch("/api/contact-requests", {
+      const res = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          full_name: form.nombre,
-          email: form.email,
-          phone: form.telefono || null,
-          message: `Solicitud de compra\n\nCiudad: ${form.ciudad}\nPaís: ${form.pais}\nDirección de envío: ${form.direccion_envio || "No especificada"}\nCantidad: ${form.cantidad}\nObservaciones: ${form.observaciones || "Ninguna"}`,
-          source: "checkout",
+          bookSlug: slug,
+          buyerName: form.nombre,
+          buyerEmail: form.email,
+          moneda: "COP",
         }),
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        throw new Error(data.error || "Error al enviar");
+        throw new Error(data.error || "Error al procesar el pago");
       }
-      setSent(true);
+      const { initPoint } = await res.json();
+      window.location.href = initPoint;
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Error al enviar. Intentá de nuevo.");
+      setError(err instanceof Error ? err.message : "Error al procesar. Intentá de nuevo.");
     } finally {
       setLoading(false);
     }
@@ -459,7 +463,7 @@ export default function CheckoutPage() {
 
                     <div className="field-group">
                       <label style={labelStyle}>
-                        Dirección completa <span style={{ fontFamily: "var(--font-lora, serif)", fontSize: "0.65rem", textTransform: "none", letterSpacing: 0, fontWeight: 400, color: "rgba(184,115,51,0.7)" }}>(si aplica)</span>
+                        Dirección completa
                       </label>
                       <input name="direccion_envio" type="text" value={form.direccion_envio} onChange={handleChange}
                         onFocus={() => setFocused("direccion_envio")} onBlur={() => setFocused(null)}
@@ -569,31 +573,15 @@ export default function CheckoutPage() {
                 <button type="submit" disabled={loading} className="submit-btn"
                   style={{
                     width: "100%", padding: "1rem 2rem",
-                    background: loading ? "rgba(184,115,51,0.4)" : "linear-gradient(90deg, #E8511A, #B87333)",
-                    color: "#F5EDD6", border: "none", borderRadius: "0.5rem",
-                    fontFamily: "var(--font-cinzel, serif)", fontSize: "0.72rem",
-                    letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 600,
+                    background: loading ? "#7ecef0" : "#009EE3",
+                    color: "#fff", border: "none", borderRadius: "0.5rem",
+                    fontFamily: "var(--font-lora, serif)", fontSize: "0.95rem",
+                    fontWeight: 700, letterSpacing: "0.02em",
                     cursor: loading ? "not-allowed" : "pointer",
-                    boxShadow: "0 4px 20px rgba(232,81,26,0.25)",
-                    display: "flex", alignItems: "center", justifyContent: "center", gap: "0.75rem"
+                    boxShadow: "0 4px 20px rgba(0,158,227,0.3)",
+                    display: "flex", alignItems: "center", justifyContent: "center", gap: "0.6rem"
                   }}>
-                  {loading ? (
-                    <>
-                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style={{ animation: "spin 1s linear infinite" }}>
-                        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-                        <circle cx="8" cy="8" r="6" stroke="rgba(245,237,214,0.3)" strokeWidth="2"/>
-                        <path d="M14 8a6 6 0 00-6-6" stroke="#F5EDD6" strokeWidth="2" strokeLinecap="round"/>
-                      </svg>
-                      Enviando solicitud...
-                    </>
-                  ) : (
-                    <>
-                      Enviar solicitud de compra
-                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                        <path d="M2 7h10M8 3l4 4-4 4" stroke="#F5EDD6" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                      </svg>
-                    </>
-                  )}
+                  {loading ? "Redirigiendo a MercadoPago..." : "Pagar con MercadoPago"}
                 </button>
 
                 <p style={{ fontFamily: "var(--font-lora, serif)", color: "rgba(27,108,168,0.6)", fontSize: "0.72rem", textAlign: "center", lineHeight: 1.6 }}>

@@ -5,7 +5,7 @@ let mpConfig: MercadoPagoConfig | null = null;
 export function getMercadoPagoConfig(): MercadoPagoConfig {
   if (!mpConfig) {
     mpConfig = new MercadoPagoConfig({
-      accessToken: process.env.MERCADOPAGO_ACCESS_TOKEN!,
+      accessToken: process.env.MP_ACCESS_TOKEN!,
     });
   }
   return mpConfig;

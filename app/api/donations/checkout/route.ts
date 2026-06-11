@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { MercadoPagoConfig, Preference } from "mercadopago";
 
 const client = new MercadoPagoConfig({
-  accessToken: process.env.MP_ACCESS_TOKEN ?? "TEST-placeholder",
+  accessToken: process.env.MP_ACCESS_TOKEN ?? "",
 });
 
 export async function POST(req: NextRequest) {
@@ -14,7 +14,13 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Campos requeridos faltantes" }, { status: 400 });
     }
 
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+    const unitPrice = parseFloat(amount);
+    if (isNaN(unitPrice) || unitPrice <= 0) {
+      return NextResponse.json({ error: "Monto inválido" }, { status: 400 });
+    }
+
+    const baseUrl = (process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000").replace(/\/$/, "");
+    const isProd = baseUrl.startsWith("https");
 
     const preference = new Preference(client);
     const result = await preference.create({
@@ -22,10 +28,10 @@ export async function POST(req: NextRequest) {
         items: [
           {
             id: "donacion",
-            title: "Donación — Fundación Social Galeona de Cádiz",
+            title: "Donacion - Fundacion Social Galeona de Cadiz",
             quantity: 1,
-            unit_price: parseFloat(amount),
-            currency_id: "COP",
+            unit_price: unitPrice,
+            currency_id: "ARS",
           },
         ],
         payer: {
@@ -39,13 +45,13 @@ export async function POST(req: NextRequest) {
           failure: `${baseUrl}/donaciones/error`,
           pending: `${baseUrl}/donaciones/gracias`,
         },
-        auto_return: "approved",
+        ...(isProd ? { auto_return: "approved" as const } : {}),
       },
     });
 
     return NextResponse.json({ preference_id: result.id, init_point: result.init_point });
-  } catch (err) {
-    console.error("[donations/checkout] error:", err);
-    return NextResponse.json({ error: "Error al crear preferencia de pago" }, { status: 500 });
+  } catch (err: any) {
+    console.error("[donations/checkout] error:", JSON.stringify(err, null, 2));
+    return NextResponse.json({ error: "Error al crear preferencia de pago", detail: err?.message }, { status: 500 });
   }
 }

@@ -107,19 +107,42 @@ export default async function BookDetailPage({ params }: Props) {
               </div>
             )}
 
-            {/* Botón comprar */}
+            {/* Disponibilidad + botón comprar */}
             {(precioCop > 0 || precioUsd > 0) && (
-              <Link
-                href={`/checkout?slug=${slug}`}
-                className="inline-flex items-center gap-2 px-5 md:px-8 py-2.5 md:py-3 rounded-full text-xs md:text-sm font-semibold tracking-[0.12em] uppercase transition-opacity hover:opacity-90 mt-1 self-start"
-                style={{ background: "linear-gradient(90deg, #E8511A, #B87333)", color: "#F5EDD6", fontFamily: "var(--font-cinzel, serif)" }}
-              >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
-                  <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
-                </svg>
-                Comprar
-              </Link>
+              <div className="flex flex-col gap-2 mt-1">
+                {book.disponibleCompra && (
+                  <p
+                    className="text-xs"
+                    style={{ color: (book.stock ?? 1) > 0 ? "#16a34a" : "#C0392B", fontFamily: "var(--font-lora, serif)" }}
+                  >
+                    {(book.stock ?? 1) > 0 ? "Disponible" : "Sin stock"}
+                  </p>
+                )}
+                {book.disponibleCompra && (book.stock ?? 1) > 0 ? (
+                  <Link
+                    href={`/checkout?slug=${slug}`}
+                    className="inline-flex items-center gap-2 px-5 md:px-8 py-2.5 md:py-3 rounded-full text-xs md:text-sm font-semibold tracking-[0.12em] uppercase transition-opacity hover:opacity-90 self-start"
+                    style={{ background: "linear-gradient(90deg, #E8511A, #B87333)", color: "#F5EDD6", fontFamily: "var(--font-cinzel, serif)" }}
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+                      <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                    </svg>
+                    Comprar
+                  </Link>
+                ) : book.disponibleCompra ? (
+                  <span
+                    className="inline-flex items-center gap-2 px-5 md:px-8 py-2.5 md:py-3 rounded-full text-xs md:text-sm font-semibold tracking-[0.12em] uppercase self-start opacity-40 cursor-not-allowed"
+                    style={{ background: "linear-gradient(90deg, #E8511A, #B87333)", color: "#F5EDD6", fontFamily: "var(--font-cinzel, serif)" }}
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+                      <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                    </svg>
+                    Sin stock
+                  </span>
+                ) : null}
+              </div>
             )}
           </div>
         </div>

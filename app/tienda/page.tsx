@@ -24,6 +24,7 @@ export default async function TiendaPage() {
     precioUsd: Number(b.precioUsd),
     coverUrl: b.coverUrl,
     disponibleCompra: b.disponibleCompra,
+    stock: b.stock,
   }));
 
   const WA_MSG = starred

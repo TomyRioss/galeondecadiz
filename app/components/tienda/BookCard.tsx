@@ -44,13 +44,18 @@ export default function BookCard({ slug, nombre, precioCop, precioUsd, coverUrl,
             >
               {nombre}
             </p>
-            <div className="flex items-baseline gap-2 mt-1">
+            <div className="flex items-baseline gap-2 mt-1 flex-wrap">
               <span className="text-sm font-bold" style={{ color: "#B87333", fontFamily: "var(--font-cinzel, serif)" }}>
                 ${precioCop.toLocaleString("es-CO")} COP
               </span>
               <span className="text-xs" style={{ color: "#8a7a5a", fontFamily: "var(--font-lora, serif)" }}>
                 ${precioUsd.toFixed(2)} USD
               </span>
+              {disponibleCompra && (
+                <span className="text-xs" style={{ color: hayStock ? "#16a34a" : "#C0392B", fontFamily: "var(--font-lora, serif)" }}>
+                  {hayStock ? "Disponible" : "Sin stock"}
+                </span>
+              )}
             </div>
           </div>
         </div>
