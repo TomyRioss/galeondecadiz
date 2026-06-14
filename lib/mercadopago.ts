@@ -42,7 +42,7 @@ export async function createPreference(params: CreatePreferenceParams) {
         failure: `${baseUrl}/tienda/confirmacion?order_id=${params.orderId}&status=failure`,
         pending: `${baseUrl}/tienda/confirmacion?order_id=${params.orderId}&status=pending`,
       },
-      auto_return: "approved",
+      ...(baseUrl && !baseUrl.includes("localhost") ? { auto_return: "approved" as const } : {}),
       notification_url: `${baseUrl}/api/webhook/mercadopago`,
       external_reference: params.orderId,
     },
