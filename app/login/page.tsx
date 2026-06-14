@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import Image from "next/image";
+import { Suspense } from "react";
 import LoginForm from "./LoginForm";
 
 export const metadata = { title: "Acceso Administrativo — Galeona de Cádiz" };
@@ -83,7 +84,9 @@ export default async function LoginPage() {
             />
           </div>
 
-          <LoginForm />
+          <Suspense>
+            <LoginForm />
+          </Suspense>
         </div>
       </div>
     </div>

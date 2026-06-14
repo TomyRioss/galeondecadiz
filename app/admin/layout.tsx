@@ -19,21 +19,6 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             backdropFilter: "blur(8px)",
           }}
         >
-          <div className="flex items-center gap-2">
-            <span
-              className="text-[0.55rem] tracking-[0.25em] uppercase"
-              style={{ color: "#B87333", fontFamily: "var(--font-cinzel, serif)" }}
-            >
-              Fundación Social Galeona de Cádiz
-            </span>
-            <span style={{ color: "rgba(184,115,51,0.35)" }}>·</span>
-            <span
-              className="text-[0.55rem] tracking-[0.2em] uppercase"
-              style={{ color: "rgba(26,58,92,0.45)", fontFamily: "var(--font-cinzel, serif)" }}
-            >
-              Panel de Administración
-            </span>
-          </div>
           <div className="ml-auto flex items-center gap-3">
             <div
               className="h-6 w-px"
@@ -49,7 +34,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         </header>
 
         {/* Page content */}
-        <main className="flex-1 p-8 md:p-10 max-w-6xl w-full">
+        <main className="flex-1 w-full">
           {children}
         </main>
       </div>

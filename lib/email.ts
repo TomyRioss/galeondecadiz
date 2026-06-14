@@ -1,5 +1,63 @@
 import { Resend } from "resend";
 
+export interface DonationEmailParams {
+  donorName: string;
+  donorEmail: string;
+  phone?: string | null;
+  amount: number;
+  message?: string | null;
+  donationId: string;
+}
+
+export async function sendDonationThankYouEmail(params: DonationEmailParams) {
+  const resend = new Resend(process.env.RESEND_API_KEY!);
+  const montoFormatted = `$${params.amount.toLocaleString("es-CO")} COP`;
+
+  const { error } = await resend.emails.send({
+    from: "Donaciones Galeona <donaciones@galeonadecadiz.org>",
+    to: [params.donorEmail],
+    subject: "¡Gracias por tu donación — Fundación Galeona de Cádiz!",
+    html: `
+      <div style="font-family: Georgia, serif; color: #1A3A5C; max-width: 600px; margin: 0 auto; padding: 24px;">
+        <h1 style="font-size: 22px; color: #1A3A5C;">¡Gracias, ${params.donorName}!</h1>
+        <p style="color: #1B6CA8;">Hemos recibido tu donación de <strong>${montoFormatted}</strong>.</p>
+        <p style="color: #1B6CA8;">Tu generosidad contribuye directamente a nuestra misión. La Fundación Galeona de Cádiz te agradece profundamente.</p>
+        <hr style="border-color: #B87333; margin: 24px 0;" />
+        <p style="font-size: 12px; color: #B87333;">Ref. donación: ${params.donationId}</p>
+      </div>
+    `,
+  });
+
+  if (error) console.error("[email] donation thank you error:", error);
+}
+
+export async function sendDonationNotificationEmail(params: DonationEmailParams) {
+  const resend = new Resend(process.env.RESEND_API_KEY!);
+  const montoFormatted = `$${params.amount.toLocaleString("es-CO")} COP`;
+
+  const { error } = await resend.emails.send({
+    from: "Donaciones Galeona <donaciones@galeonadecadiz.org>",
+    to: ["tomyrios2006@gmail.com"],
+    subject: `Nueva donación recibida — ${montoFormatted}`,
+    html: `
+      <div style="font-family: Georgia, serif; color: #1A3A5C; max-width: 600px; margin: 0 auto; padding: 24px;">
+        <h1 style="font-size: 20px; color: #1A3A5C;">Nueva donación recibida</h1>
+        <table style="width: 100%; border-collapse: collapse; margin-top: 16px;">
+          <tr><td style="padding: 8px; color: #B87333; font-weight: bold;">Nombre</td><td style="padding: 8px; color: #1B6CA8;">${params.donorName}</td></tr>
+          <tr><td style="padding: 8px; color: #B87333; font-weight: bold;">Email</td><td style="padding: 8px; color: #1B6CA8;">${params.donorEmail}</td></tr>
+          <tr><td style="padding: 8px; color: #B87333; font-weight: bold;">Teléfono</td><td style="padding: 8px; color: #1B6CA8;">${params.phone ?? "—"}</td></tr>
+          <tr><td style="padding: 8px; color: #B87333; font-weight: bold;">Monto</td><td style="padding: 8px; color: #1B6CA8;">${montoFormatted}</td></tr>
+          <tr><td style="padding: 8px; color: #B87333; font-weight: bold;">Mensaje</td><td style="padding: 8px; color: #1B6CA8;">${params.message ?? "—"}</td></tr>
+          <tr><td style="padding: 8px; color: #B87333; font-weight: bold;">ID</td><td style="padding: 8px; color: #1B6CA8;">${params.donationId}</td></tr>
+        </table>
+      </div>
+    `,
+  });
+
+  if (error) console.error("[email] donation notification error:", error);
+}
+
+
 export interface OrderEmailParams {
   buyerName: string;
   buyerEmail: string;

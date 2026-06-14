@@ -85,11 +85,10 @@ export default function AdminContactosPage() {
   }
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-4 pt-6">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div className="flex items-start gap-4">
-          <div className="w-1.5 h-14 rounded-full flex-shrink-0" style={{ background: "linear-gradient(180deg, #E8511A, #B87333)" }} />
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 px-8">
+        <div className="flex items-start">
           <div>
             <h1 className="text-2xl font-bold leading-tight" style={{ color: "#1A3A5C", fontFamily: "var(--font-cinzel, serif)" }}>
               Contactos
@@ -128,48 +127,10 @@ export default function AdminContactosPage() {
         </div>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        {Object.entries(SOURCE_LABELS).map(([key, label]) => {
-          const count = records.filter((r) => r.source === key).length;
-          const isActive = sourceFilter === key;
-          return (
-            <button
-              key={key}
-              onClick={() => { setSourceFilter(isActive ? "" : key); setOffset(0); }}
-              className="rounded-xl p-4 border-2 text-left transition-all hover:-translate-y-0.5 hover:shadow-md"
-              style={{
-                borderColor: isActive ? SOURCE_COLORS[key] : "#B87333",
-                background: isActive
-                  ? `linear-gradient(135deg, ${SOURCE_COLORS[key]}15, ${SOURCE_COLORS[key]}08)`
-                  : "linear-gradient(135deg, #e8dfc4, #d4c9a8)",
-                boxShadow: isActive ? `0 4px 16px ${SOURCE_COLORS[key]}30` : "0 2px 8px rgba(26,58,92,0.05)",
-              }}
-            >
-              <div className="flex items-center gap-2 mb-2">
-                <div className="w-2 h-2 rounded-full" style={{ background: SOURCE_COLORS[key] || "#B87333" }} />
-                <span
-                  className="text-[0.6rem] tracking-widest uppercase font-semibold leading-tight"
-                  style={{ color: isActive ? SOURCE_COLORS[key] : "#B87333", fontFamily: "var(--font-cinzel, serif)" }}
-                >
-                  {label}
-                </span>
-              </div>
-              <span
-                className="text-2xl font-bold"
-                style={{ color: "#1A3A5C", fontFamily: "var(--font-cinzel, serif)" }}
-              >
-                {isActive ? total : count}
-              </span>
-            </button>
-          );
-        })}
-      </div>
-
       {/* Tabla */}
       <div
-        className="rounded-2xl border-2 overflow-hidden"
-        style={{ borderColor: "#B87333", background: "linear-gradient(135deg, #e8dfc4, #d4c9a8)", boxShadow: "0 4px 32px rgba(26,58,92,0.08)" }}
+        className="overflow-hidden"
+        style={{ background: "linear-gradient(135deg, #e8dfc4, #d4c9a8)" }}
       >
         {loading ? (
           <div className="p-16 flex flex-col items-center gap-4">
@@ -282,7 +243,7 @@ export default function AdminContactosPage() {
 
       {/* Paginación */}
       {total > 0 && (
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between px-8">
           <p className="text-xs" style={{ color: "#1B6CA8", fontFamily: "var(--font-lora, serif)" }}>
             {offset + 1}–{Math.min(offset + records.length, total)} de {total} contactos
           </p>

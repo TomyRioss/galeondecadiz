@@ -10,6 +10,7 @@ import {
   Users,
   LogOut,
   Mail,
+  Heart,
 } from "lucide-react";
 
 const navItems = [
@@ -18,6 +19,7 @@ const navItems = [
   { label: "Libros",      href: "/admin/libros",      Icon: BookOpen },
   { label: "Usuarios",    href: "/admin/usuarios",    Icon: Users },
   { label: "Testimonios", href: "/admin/testimonios", Icon: MessageSquare },
+  { label: "Donaciones",  href: "/admin/donaciones",  Icon: Heart },
 ];
 
 interface AdminSidebarProps {

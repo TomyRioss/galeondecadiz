@@ -151,7 +151,7 @@ export default function Footer() {
           <div className="flex gap-4 items-center">
             {legalLinks.map((l) => (
               <Link
-                key={l.href}
+                key={l.label}
                 href={l.href}
                 className="text-white/40 text-[0.6rem] hover:text-white/70 transition-colors tracking-wide"
                 style={{ fontFamily: "var(--font-lora, serif)" }}

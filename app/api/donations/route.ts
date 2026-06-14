@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { sendDonationThankYouEmail, sendDonationNotificationEmail } from "@/lib/email";
 
 export async function POST(req: NextRequest) {
   try {
@@ -19,6 +20,24 @@ export async function POST(req: NextRequest) {
         message: message ?? null,
         status: "intention",
       },
+    });
+
+    const emailParams = {
+      donorName: full_name,
+      donorEmail: email,
+      phone: phone ?? null,
+      amount: parseFloat(amount),
+      message: message ?? null,
+      donationId: donation.id,
+    };
+
+    Promise.allSettled([
+      sendDonationThankYouEmail(emailParams),
+      sendDonationNotificationEmail(emailParams),
+    ]).then((results) => {
+      results.forEach((r) => {
+        if (r.status === "rejected") console.error("[donations] email error:", r.reason);
+      });
     });
 
     return NextResponse.json({ ok: true, id: donation.id });

@@ -1,35 +1,47 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Eye, EyeOff, AlertCircle } from "lucide-react";
 
 export default function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
+  useEffect(() => {
+    const authError = searchParams.get("error");
+    if (authError) {
+      setError("Credenciales inválidas o acceso no autorizado.");
+    }
+  }, [searchParams]);
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
     setLoading(true);
 
-    const result = await signIn("credentials", {
-      email,
-      password,
-      redirect: false,
-    });
+    try {
+      const result = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+      });
 
-    setLoading(false);
-
-    if (result?.error) {
-      setError("Credenciales inválidas o acceso no autorizado.");
-    } else {
-      router.push("/admin");
+      if (result?.error) {
+        setError("Credenciales inválidas o acceso no autorizado.");
+      } else {
+        router.push("/admin");
+      }
+    } catch {
+      setError("Error de conexión. Verificá tu red e intentá de nuevo.");
+    } finally {
+      setLoading(false);
     }
   }
 

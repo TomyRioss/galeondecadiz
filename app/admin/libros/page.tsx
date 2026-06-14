@@ -163,11 +163,10 @@ export default function LibrosPage() {
   }
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-4 pt-6">
       {/* Header */}
-      <div className="flex items-start justify-between">
-        <div className="flex items-start gap-4">
-          <div className="w-1.5 h-14 rounded-full flex-shrink-0" style={{ background: "linear-gradient(180deg, #E8511A, #B87333)" }} />
+      <div className="flex items-start justify-between px-8">
+        <div className="flex items-start">
           <div>
             <h1 className="text-2xl font-bold leading-tight" style={{ color: "#1A3A5C", fontFamily: "var(--font-cinzel, serif)" }}>
               Libros
@@ -387,8 +386,8 @@ export default function LibrosPage() {
         </div>
       ) : books.length === 0 ? (
         <div
-          className="rounded-2xl p-16 flex flex-col items-center gap-4 border-2"
-          style={{ background: "linear-gradient(135deg, #e8dfc4, #d4c9a8)", borderColor: "#B87333" }}
+          className="p-16 flex flex-col items-center gap-4"
+          style={{ background: "linear-gradient(135deg, #e8dfc4, #d4c9a8)" }}
         >
           <div className="w-16 h-16 rounded-full flex items-center justify-center" style={{ background: "linear-gradient(135deg, #1A3A5C, #1F4FA3)" }}>
             <BookOpen size={28} style={{ color: "#B87333" }} />
@@ -398,15 +397,14 @@ export default function LibrosPage() {
           </p>
         </div>
       ) : (
-        <div className="flex flex-col gap-3 max-w-3xl">
+        <div className="flex flex-col gap-0">
           {books.map((b) => (
             <div
               key={b.id}
-              className="flex items-center gap-4 rounded-xl p-4 border-2 transition-all hover:shadow-md group"
+              className="flex items-center gap-4 p-4 transition-all group border-b"
               style={{
                 background: "linear-gradient(135deg, #e8dfc4, #d4c9a8)",
-                borderColor: "#B87333",
-                boxShadow: "0 2px 8px rgba(26,58,92,0.05)",
+                borderColor: "rgba(184,115,51,0.2)",
               }}
             >
               {/* Cover */}
