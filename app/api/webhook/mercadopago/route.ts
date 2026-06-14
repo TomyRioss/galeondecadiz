@@ -53,8 +53,25 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ received: true });
     }
 
-    const orderId = payment.external_reference;
-    if (!orderId) return NextResponse.json({ received: true });
+    const externalRef = payment.external_reference;
+    if (!externalRef) return NextResponse.json({ received: true });
+
+    // Donation flow
+    if (externalRef.startsWith("don_")) {
+      const donationId = externalRef.slice(4);
+      try {
+        await (prisma as any).donation.updateMany({
+          where: { id: donationId, status: { not: "paid" } },
+          data: { status: "paid" },
+        });
+      } catch (e) {
+        console.error("Webhook: donation update error", e);
+      }
+      return NextResponse.json({ received: true });
+    }
+
+    // Ebook order flow
+    const orderId = externalRef;
 
     const order = await prisma.order.findUnique({
       where: { id: orderId },

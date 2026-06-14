@@ -152,7 +152,7 @@ export default function DonacionesPage() {
               Monto (COP)
             </label>
             <input
-              id="amount" name="amount" type="number" min="1000" required
+              id="amount" name="amount" type="number" min="1" required
               value={form.amount} onChange={handleChange}
               className="w-full px-4 py-2.5 rounded-lg text-sm border outline-none"
               style={inputStyle} placeholder="Ej: 50000"

@@ -15,30 +15,7 @@ function DonacionesGraciasContent() {
   useEffect(() => {
     if (registered.current) return;
     registered.current = true;
-
-    const paymentId = params.get("payment_id");
-    const status = params.get("status") ?? params.get("collection_status");
-
-    if (status !== "approved") { setDone(true); return; }
-
-    // MP passes metadata back via query params on auto_return
-    // We register the donation here on confirmed payment
-    const metadata = {
-      full_name: params.get("payer_email") ? "Donante" : "Donante",
-      email: params.get("payer_email") ?? "",
-      phone: null,
-      amount: params.get("transaction_amount") ?? "0",
-      message: `Pago MercadoPago #${paymentId}`,
-      accepted_terms: true,
-    };
-
-    fetch("/api/donations", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(metadata),
-    })
-      .catch((e) => console.error("[gracias] register error:", e))
-      .finally(() => setDone(true));
+    setDone(true);
   }, [params]);
 
   return (

@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { MercadoPagoConfig, Preference } from "mercadopago";
+// @ts-ignore
+import { prisma } from "@/lib/prisma";
 
 const client = new MercadoPagoConfig({
   accessToken: process.env.MP_ACCESS_TOKEN ?? "",
@@ -19,6 +21,17 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Monto inválido" }, { status: 400 });
     }
 
+    const donation = await (prisma as any).donation.create({
+      data: {
+        fullName: full_name,
+        email,
+        phone: phone ?? null,
+        amount: unitPrice,
+        message: message ?? null,
+        status: "pending",
+      },
+    });
+
     const baseUrl = (process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000").replace(/\/$/, "");
     const isProd = baseUrl.startsWith("https");
 
@@ -31,7 +44,7 @@ export async function POST(req: NextRequest) {
             title: "Donacion - Fundacion Social Galeona de Cadiz",
             quantity: 1,
             unit_price: unitPrice,
-            currency_id: "ARS",
+            currency_id: "COP",
           },
         ],
         payer: {
@@ -39,7 +52,7 @@ export async function POST(req: NextRequest) {
           email,
           phone: phone ? { number: phone } : undefined,
         },
-        metadata: { full_name, email, phone, amount, message },
+        external_reference: `don_${donation.id}`,
         back_urls: {
           success: `${baseUrl}/donaciones/gracias`,
           failure: `${baseUrl}/donaciones/error`,
