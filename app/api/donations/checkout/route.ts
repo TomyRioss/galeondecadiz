@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
             title: "Donacion - Fundacion Social Galeona de Cadiz",
             quantity: 1,
             unit_price: unitPrice,
-            currency_id: "ARS",
+            currency_id: "COP",
           },
         ],
         payer: {

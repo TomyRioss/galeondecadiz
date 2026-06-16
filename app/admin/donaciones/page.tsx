@@ -21,6 +21,30 @@ export default function AdminDonacionesPage() {
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
   const [offset, setOffset] = useState(0);
+  const [testingSend, setTestingSend] = useState<string | null>(null);
+  const [toast, setToast] = useState<{ msg: string; ok: boolean } | null>(null);
+
+  function showToast(msg: string, ok: boolean) {
+    setToast({ msg, ok });
+    setTimeout(() => setToast(null), 4000);
+  }
+
+  async function sendTestEmail(id: string) {
+    setTestingSend(id);
+    try {
+      const res = await fetch("/api/admin/test-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type: "donacion", recordId: id }),
+      });
+      if (!res.ok) throw new Error();
+      showToast("Email de prueba enviado a tomyrios2006@gmail.com", true);
+    } catch {
+      showToast("Error al enviar email de prueba", false);
+    } finally {
+      setTestingSend(null);
+    }
+  }
 
   function fetchRecords() {
     setLoading(true);
@@ -65,6 +89,12 @@ export default function AdminDonacionesPage() {
 
   return (
     <div className="flex flex-col gap-4 pt-6">
+      {toast && (
+        <div className="fixed top-4 right-4 z-50 px-5 py-3 rounded-xl text-sm font-semibold shadow-xl"
+          style={{ background: toast.ok ? "rgba(26,58,92,0.95)" : "rgba(232,81,26,0.95)", color: "#F5EDD6", fontFamily: "var(--font-lora, serif)", border: `1px solid ${toast.ok ? "#B87333" : "#E8511A"}` }}>
+          {toast.msg}
+        </div>
+      )}
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 px-8">
         <div>
@@ -75,16 +105,26 @@ export default function AdminDonacionesPage() {
             {total > 0 ? `${total} donación${total !== 1 ? "es" : ""} confirmada${total !== 1 ? "s" : ""}` : "Donaciones recibidas por MercadoPago"}
           </p>
         </div>
-        {records.length > 0 && (
+        <div className="flex gap-2">
           <button
-            onClick={exportCSV}
-            className="px-4 py-2 rounded-full text-sm font-semibold transition-all hover:opacity-90 hover:-translate-y-px flex items-center gap-2"
-            style={{ background: "linear-gradient(90deg, #E8511A, #B87333)", color: "#F5EDD6", fontFamily: "var(--font-cinzel, serif)" }}
+            onClick={() => records[0] && sendTestEmail(records[0].id)}
+            disabled={!records[0] || testingSend !== null}
+            className="px-4 py-2 rounded-full text-sm font-semibold transition-all hover:opacity-90 flex items-center gap-2 disabled:opacity-40"
+            style={{ background: "rgba(232,81,26,0.12)", color: "#E8511A", border: "1.5px solid rgba(232,81,26,0.35)", fontFamily: "var(--font-cinzel, serif)" }}
           >
-            <Download size={12} />
-            Exportar CSV
+            {testingSend ? "Enviando…" : "🧪 Test email"}
           </button>
-        )}
+          {records.length > 0 && (
+            <button
+              onClick={exportCSV}
+              className="px-4 py-2 rounded-full text-sm font-semibold transition-all hover:opacity-90 hover:-translate-y-px flex items-center gap-2"
+              style={{ background: "linear-gradient(90deg, #E8511A, #B87333)", color: "#F5EDD6", fontFamily: "var(--font-cinzel, serif)" }}
+            >
+              <Download size={12} />
+              Exportar CSV
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Contenido */}
@@ -126,7 +166,7 @@ export default function AdminDonacionesPage() {
               <table className="w-full text-sm">
                 <thead>
                   <tr style={{ background: "#1A3A5C" }}>
-                    {["Donante", "Correo", "Teléfono", "Monto", "Fecha", "Mensaje"].map((h) => (
+                    {["Donante", "Correo", "Teléfono", "Monto", "Fecha", "Estado", "Mensaje", ""].map((h) => (
                       <th
                         key={h}
                         className="px-5 py-3.5 text-left text-[0.6rem] tracking-[0.2em] uppercase font-semibold"
@@ -176,8 +216,31 @@ export default function AdminDonacionesPage() {
                           </span>
                         </div>
                       </td>
+                      <td className="px-5 py-3.5">
+                        <span
+                          className="px-2.5 py-1 rounded-full text-[0.6rem] tracking-widest uppercase font-semibold"
+                          style={{
+                            background: r.status === "paid" ? "rgba(46,107,62,0.15)" : "rgba(232,81,26,0.12)",
+                            color: r.status === "paid" ? "#2E6B3E" : "#E8511A",
+                            border: `1px solid ${r.status === "paid" ? "rgba(46,107,62,0.3)" : "rgba(232,81,26,0.3)"}`,
+                            fontFamily: "var(--font-cinzel, serif)",
+                          }}
+                        >
+                          {r.status === "paid" ? "Pagado" : r.status}
+                        </span>
+                      </td>
                       <td className="px-5 py-3.5 max-w-[200px] truncate text-xs italic" style={{ color: "#1B6CA8", fontFamily: "var(--font-lora, serif)" }}>
                         {r.message || <span style={{ opacity: 0.4 }}>—</span>}
+                      </td>
+                      <td className="px-5 py-3.5">
+                        <button
+                          onClick={() => sendTestEmail(r.id)}
+                          disabled={testingSend === r.id}
+                          className="px-3 py-1.5 rounded-full text-[0.58rem] tracking-widest uppercase font-semibold transition-all hover:opacity-80 disabled:opacity-40"
+                          style={{ background: "rgba(232,81,26,0.12)", color: "#E8511A", border: "1.5px solid rgba(232,81,26,0.3)", fontFamily: "var(--font-cinzel, serif)" }}
+                        >
+                          {testingSend === r.id ? "…" : "🧪 Test"}
+                        </button>
                       </td>
                     </tr>
                   ))}

@@ -33,8 +33,7 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // V4: viewerUrl comes from signed Supabase Storage URL — pending PDF delivery from client
-    return NextResponse.json({ ok: true, viewerUrl: null });
+    return NextResponse.json({ ok: true, userId: user.id });
   } catch (err) {
     console.error("[ebook/register] error:", err);
     return NextResponse.json({ error: "Error interno" }, { status: 500 });

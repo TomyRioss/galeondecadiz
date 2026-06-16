@@ -3,7 +3,7 @@
 import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, BookOpen, User, FileText, DollarSign, Package, Tag, Eye, ShoppingCart, Upload, X, CheckCircle2 } from "lucide-react";
 
 interface Book {
   id: string;
@@ -24,15 +24,16 @@ interface Book {
   tipo: string;
 }
 
+const inputCls = "w-full px-3 py-2 rounded-lg text-sm border-2 outline-none transition-all duration-200 focus:border-[#E8511A] placeholder:opacity-40";
 const inputStyle = {
   background: "#F5EDD6",
-  border: "1.5px solid #B87333",
+  borderColor: "#B87333",
   color: "#1A3A5C",
   fontFamily: "var(--font-lora, serif)",
 };
 
-const labelCls = "text-[0.6rem] tracking-[0.2em] uppercase font-semibold";
-const labelColor = { color: "#B87333", fontFamily: "var(--font-cinzel, serif)" };
+const labelCls = "flex items-center gap-1.5 text-[0.6rem] tracking-[0.22em] uppercase font-semibold mb-1.5";
+const labelStyle = { color: "#B87333", fontFamily: "var(--font-cinzel, serif)" };
 
 export default function EditLibroPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -90,16 +91,6 @@ export default function EditLibroPage({ params }: { params: Promise<{ id: string
     load();
   }, [id, router]);
 
-  function toSlug(str: string) {
-    return str
-      .toLowerCase()
-      .normalize("NFD")
-      .replace(/[̀-ͯ]/g, "")
-      .replace(/[^a-z0-9\s-]/g, "")
-      .trim()
-      .replace(/\s+/g, "-");
-  }
-
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
     const { name, value, type } = e.target;
     setForm((prev) => ({
@@ -149,30 +140,55 @@ export default function EditLibroPage({ params }: { params: Promise<{ id: string
 
   if (loading) {
     return (
-      <div className="flex items-center gap-3 py-8">
-        <div className="animate-spin w-6 h-6 rounded-full border-2" style={{ borderColor: "#B87333", borderTopColor: "transparent" }} />
-        <span className="text-sm" style={{ color: "#B87333", fontFamily: "var(--font-lora, serif)" }}>Cargando…</span>
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="flex flex-col items-center gap-4">
+          <div className="animate-spin w-10 h-10 rounded-full border-2" style={{ borderColor: "#B87333", borderTopColor: "#E8511A" }} />
+          <span className="text-sm tracking-widest uppercase" style={{ color: "#B87333", fontFamily: "var(--font-cinzel, serif)" }}>Cargando…</span>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col gap-8 max-w-3xl">
+    <div className="flex flex-col gap-3 w-full pt-6 pb-12 px-4 md:px-8">
       {/* Header */}
-      <div className="flex items-start gap-4">
-        <div className="w-1.5 h-14 rounded-full flex-shrink-0" style={{ background: "linear-gradient(180deg, #E8511A, #B87333)" }} />
-        <div className="flex-1">
+      <div className="flex items-center justify-between mb-1">
+        <div className="flex items-start gap-4">
+          <div className="w-1 h-12 rounded-full flex-shrink-0 mt-1" style={{ background: "linear-gradient(180deg, #E8511A, #B87333)" }} />
+          <div>
+            <button
+              onClick={() => router.push("/admin/libros")}
+              className="flex items-center gap-1.5 mb-1 transition-opacity hover:opacity-70"
+              style={{ color: "#B87333", fontFamily: "var(--font-cinzel, serif)", fontSize: "0.65rem", letterSpacing: "0.15em" }}
+            >
+              <ArrowLeft size={11} />
+              <span className="uppercase tracking-widest">Volver a libros</span>
+            </button>
+            <h1 className="text-3xl font-bold" style={{ color: "#1A3A5C", fontFamily: "var(--font-cinzel, serif)" }}>
+              Editar libro
+            </h1>
+          </div>
+        </div>
+
+        {/* Action buttons top */}
+        <div className="hidden md:flex items-center gap-3">
           <button
+            type="button"
             onClick={() => router.push("/admin/libros")}
-            className="flex items-center gap-1.5 text-xs mb-1 transition-opacity hover:opacity-70"
-            style={{ color: "#B87333", fontFamily: "var(--font-cinzel, serif)" }}
+            className="px-5 py-2.5 rounded-full text-sm font-semibold transition-all hover:opacity-70"
+            style={{ border: "1.5px solid #B87333", color: "#1A3A5C", fontFamily: "var(--font-cinzel, serif)" }}
           >
-            <ArrowLeft size={12} />
-            Volver a libros
+            Cancelar
           </button>
-          <h1 className="text-2xl font-bold leading-tight" style={{ color: "#1A3A5C", fontFamily: "var(--font-cinzel, serif)" }}>
-            Editar libro
-          </h1>
+          <button
+            form="edit-libro-form"
+            type="submit"
+            disabled={saving}
+            className="px-6 py-2.5 rounded-full text-sm font-semibold transition-all hover:opacity-90 disabled:opacity-50"
+            style={{ background: "linear-gradient(90deg, #E8511A, #B87333)", color: "#F5EDD6", fontFamily: "var(--font-cinzel, serif)" }}
+          >
+            {saving ? "Guardando…" : "Guardar cambios"}
+          </button>
         </div>
       </div>
 
@@ -181,7 +197,7 @@ export default function EditLibroPage({ params }: { params: Promise<{ id: string
         <div
           className="px-4 py-3 rounded-xl text-sm border flex items-center gap-3"
           style={{
-            background: msg.type === "ok" ? "#2E6B3E15" : "#C0392B15",
+            background: msg.type === "ok" ? "#2E6B3E12" : "#C0392B12",
             color: msg.type === "ok" ? "#2E6B3E" : "#C0392B",
             borderColor: msg.type === "ok" ? "#2E6B3E40" : "#C0392B40",
             fontFamily: "var(--font-lora, serif)",
@@ -192,193 +208,248 @@ export default function EditLibroPage({ params }: { params: Promise<{ id: string
         </div>
       )}
 
-      {/* Formulario */}
-      <div
-        className="rounded-2xl p-6 md:p-8 border-2"
-        style={{
-          background: "linear-gradient(160deg, #ede4cb 0%, #ddd0b0 100%)",
-          borderColor: "#B87333",
-          boxShadow: "0 8px 32px rgba(26,58,92,0.12)",
-        }}
-      >
-        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {[
-              { name: "nombre", label: "Nombre del libro", type: "text", required: true },
-              { name: "autor", label: "Autor/a", type: "text", required: true },
-            ].map(({ name, label, type, required }) => (
-              <div key={name} className="flex flex-col gap-1.5">
-                <label className={labelCls} style={labelColor}>{label}</label>
-                <input
-                  name={name}
-                  type={type}
-                  required={required}
-                  value={(form as Record<string, unknown>)[name] as string}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2.5 rounded-lg text-sm border outline-none focus:border-[#E8511A] transition-colors"
-                  style={inputStyle}
-                />
-              </div>
-            ))}
-          </div>
+      {/* Two-column layout */}
+      <form id="edit-libro-form" onSubmit={handleSubmit} className="grid grid-cols-1 xl:grid-cols-3 gap-4">
 
-          {/* Uploads */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {([
-              { field: "coverUrl", label: "Portada", bucket: "book-covers", accept: "image/*" },
-              { field: "authorImageUrl", label: "Imagen autor", bucket: "author-images", accept: "image/*" },
-              { field: "pdfUrl", label: "PDF / E-Book", bucket: "pdfs", accept: "application/pdf" },
-            ] as const).map(({ field, label, bucket, accept }) => (
-              <div key={field} className="flex flex-col gap-1.5">
-                <label className={labelCls} style={labelColor}>{label}</label>
-                <label
-                  className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm border cursor-pointer transition-colors hover:border-[#E8511A]"
-                  style={{ ...inputStyle, opacity: uploading[field] ? 0.6 : 1 }}
-                >
-                  <span style={{ color: "#1A3A5C" }}>
-                    {uploading[field] ? "Subiendo…" : (form as Record<string, unknown>)[field] ? "✓ Cargado" : "Seleccionar"}
-                  </span>
+        {/* LEFT: main fields */}
+        <div className="xl:col-span-2 flex flex-col gap-3">
+
+          {/* Identificación */}
+          <section className="rounded-xl p-4 border-2" style={{ background: "linear-gradient(160deg,#ede4cb 0%,#ddd0b0 100%)", borderColor: "#B87333", boxShadow: "0 4px 24px rgba(26,58,92,0.08)" }}>
+            <div className="flex items-center gap-2 mb-3">
+              <BookOpen size={14} style={{ color: "#B87333" }} />
+              <span className="text-[0.6rem] tracking-[0.25em] uppercase font-semibold" style={{ color: "#B87333", fontFamily: "var(--font-cinzel, serif)" }}>Identificación</span>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div>
+                <label className={labelCls} style={labelStyle}><BookOpen size={10} />Nombre del libro</label>
+                <input name="nombre" type="text" required value={form.nombre} onChange={handleChange} className={inputCls} style={inputStyle} placeholder="Título del libro…" />
+              </div>
+              <div>
+                <label className={labelCls} style={labelStyle}><User size={10} />Autor/a</label>
+                <input name="autor" type="text" required value={form.autor} onChange={handleChange} className={inputCls} style={inputStyle} placeholder="Nombre del autor…" />
+              </div>
+            </div>
+          </section>
+
+          {/* Descripción */}
+          <section className="rounded-xl p-4 border-2" style={{ background: "linear-gradient(160deg,#ede4cb 0%,#ddd0b0 100%)", borderColor: "#B87333", boxShadow: "0 4px 24px rgba(26,58,92,0.08)" }}>
+            <div className="flex items-center gap-2 mb-3">
+              <FileText size={14} style={{ color: "#B87333" }} />
+              <span className="text-[0.6rem] tracking-[0.25em] uppercase font-semibold" style={{ color: "#B87333", fontFamily: "var(--font-cinzel, serif)" }}>Contenido</span>
+            </div>
+            <div className="flex flex-col gap-3">
+              <div>
+                <label className={labelCls} style={labelStyle}><FileText size={10} />Descripción</label>
+                <textarea name="descripcion" rows={4} required value={form.descripcion} onChange={handleChange} className={`${inputCls} resize-none`} style={inputStyle} placeholder="Descripción del libro…" />
+              </div>
+              <div>
+                <label className={labelCls} style={labelStyle}><User size={10} />Biografía del autor <span className="opacity-60">(opcional)</span></label>
+                <textarea name="authorBio" rows={3} value={form.authorBio} onChange={handleChange} className={`${inputCls} resize-none`} style={inputStyle} placeholder="Reseña biográfica del autor…" />
+              </div>
+            </div>
+          </section>
+
+          {/* Precios & Stock */}
+          <section className="rounded-xl p-4 border-2" style={{ background: "linear-gradient(160deg,#ede4cb 0%,#ddd0b0 100%)", borderColor: "#B87333", boxShadow: "0 4px 24px rgba(26,58,92,0.08)" }}>
+            <div className="flex items-center gap-2 mb-3">
+              <DollarSign size={14} style={{ color: "#B87333" }} />
+              <span className="text-[0.6rem] tracking-[0.25em] uppercase font-semibold" style={{ color: "#B87333", fontFamily: "var(--font-cinzel, serif)" }}>Precios & Inventario</span>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <div>
+                <label className={labelCls} style={labelStyle}><DollarSign size={10} />Precio COP</label>
+                <input name="precioCop" type="number" required value={form.precioCop} onChange={handleChange} className={inputCls} style={inputStyle} placeholder="0" />
+              </div>
+              <div>
+                <label className={labelCls} style={labelStyle}><DollarSign size={10} />Precio USD</label>
+                <input name="precioUsd" type="number" required value={form.precioUsd} onChange={handleChange} className={inputCls} style={inputStyle} placeholder="0" />
+              </div>
+              <div>
+                <label className={labelCls} style={labelStyle}><Package size={10} />Stock</label>
+                <input name="stock" type="number" min={0} value={form.stock} onChange={handleChange} className={inputCls} style={inputStyle} placeholder="0" />
+              </div>
+              <div>
+                <label className={labelCls} style={labelStyle}><Tag size={10} />Tipo</label>
+                <select name="tipo" value={form.tipo} onChange={handleChange} className={inputCls} style={inputStyle}>
+                  <option value="IMPRESO">Impreso</option>
+                  <option value="EBOOK">E-Book</option>
+                  <option value="AMBOS">Ambos</option>
+                </select>
+              </div>
+            </div>
+          </section>
+
+          {/* Visibilidad */}
+          <section className="rounded-xl p-4 border-2" style={{ background: "linear-gradient(160deg,#ede4cb 0%,#ddd0b0 100%)", borderColor: "#B87333", boxShadow: "0 4px 24px rgba(26,58,92,0.08)" }}>
+            <div className="flex items-center gap-2 mb-3">
+              <Eye size={14} style={{ color: "#B87333" }} />
+              <span className="text-[0.6rem] tracking-[0.25em] uppercase font-semibold" style={{ color: "#B87333", fontFamily: "var(--font-cinzel, serif)" }}>Visibilidad & Venta</span>
+            </div>
+            <div className="flex flex-col gap-3">
+              {[
+                { name: "activo", id: "activo", Icon: Eye, label: "Visible en tienda", desc: "El libro aparece en el catálogo público" },
+                { name: "disponibleCompra", id: "disponibleCompra", Icon: ShoppingCart, label: "Disponible para compra", desc: 'Muestra el botón "Comprar ahora"' },
+              ].map(({ name, id, Icon, label, desc }) => (
+                <label key={id} htmlFor={id} className="flex items-start gap-4 p-4 rounded-xl cursor-pointer transition-all hover:brightness-95"
+                  style={{ background: "#F5EDD660", border: "1.5px solid #B8733350" }}>
                   <input
-                    type="file"
-                    accept={accept}
-                    className="hidden"
-                    disabled={uploading[field]}
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file) uploadFile(field, bucket, file);
-                    }}
+                    type="checkbox"
+                    name={name}
+                    id={id}
+                    checked={(form as Record<string, unknown>)[name] as boolean}
+                    onChange={handleChange}
+                    className="mt-0.5 w-4 h-4 accent-[#E8511A] flex-shrink-0"
                   />
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-0.5">
+                      <Icon size={12} style={{ color: "#B87333" }} />
+                      <span className="text-sm font-semibold" style={{ color: "#1A3A5C", fontFamily: "var(--font-cinzel, serif)" }}>{label}</span>
+                    </div>
+                    <p className="text-xs" style={{ color: "#1B6CA8", fontFamily: "var(--font-lora, serif)" }}>{desc}</p>
+                  </div>
+                  {(form as Record<string, unknown>)[name] && (
+                    <CheckCircle2 size={16} style={{ color: "#E8511A", flexShrink: 0 }} />
+                  )}
                 </label>
-                {!!(form as Record<string, unknown>)[field] && (
-                  <button
-                    type="button"
-                    onClick={() => setForm((prev) => ({ ...prev, [field]: "" }))}
-                    className="text-xs text-center transition-opacity hover:opacity-70"
-                    style={{ color: "#B87333", fontFamily: "var(--font-cinzel, serif)" }}
-                  >
-                    Quitar
-                  </button>
-                )}
-              </div>
-            ))}
-          </div>
-
-          <div className="flex flex-col gap-1.5">
-            <label className={labelCls} style={labelColor}>Biografía del autor (opcional)</label>
-            <textarea
-              name="authorBio"
-              rows={2}
-              value={form.authorBio}
-              onChange={handleChange}
-              className="w-full px-4 py-2.5 rounded-lg text-sm border outline-none resize-none focus:border-[#E8511A] transition-colors"
-              style={inputStyle}
-            />
-          </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {[
-              { name: "precioCop", label: "Precio COP", type: "number", required: true },
-              { name: "precioUsd", label: "Precio USD", type: "number", required: true },
-              { name: "stock", label: "Stock", type: "number", required: false },
-            ].map(({ name, label, type, required }) => (
-              <div key={name} className="flex flex-col gap-1.5">
-                <label className={labelCls} style={labelColor}>{label}</label>
-                <input
-                  name={name}
-                  type={type}
-                  required={required}
-                  min={name === "stock" ? 0 : undefined}
-                  value={(form as Record<string, unknown>)[name] as string}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2.5 rounded-lg text-sm border outline-none focus:border-[#E8511A] transition-colors"
-                  style={inputStyle}
-                />
-              </div>
-            ))}
-            <div className="flex flex-col gap-1.5">
-              <label className={labelCls} style={labelColor}>Tipo</label>
-              <select
-                name="tipo"
-                value={form.tipo}
-                onChange={handleChange}
-                className="w-full px-4 py-2.5 rounded-lg text-sm border outline-none focus:border-[#E8511A] transition-colors"
-                style={inputStyle}
-              >
-                <option value="IMPRESO">Impreso</option>
-                <option value="EBOOK">E-Book</option>
-                <option value="AMBOS">Ambos</option>
-              </select>
+              ))}
             </div>
-          </div>
+          </section>
 
-          <div className="flex flex-col gap-1.5">
-            <label className={labelCls} style={labelColor}>Descripción</label>
-            <textarea
-              name="descripcion"
-              rows={3}
-              required
-              value={form.descripcion}
-              onChange={handleChange}
-              className="w-full px-4 py-2.5 rounded-lg text-sm border outline-none resize-none focus:border-[#E8511A] transition-colors"
-              style={inputStyle}
-            />
-          </div>
-
-          <div className="flex flex-col gap-3">
-            <div className="flex items-center gap-3">
-              <input
-                type="checkbox"
-                name="activo"
-                id="activo"
-                checked={form.activo}
-                onChange={handleChange}
-                className="w-4 h-4 accent-[#E8511A]"
-              />
-              <label htmlFor="activo" className="text-sm cursor-pointer" style={{ color: "#1A3A5C", fontFamily: "var(--font-lora, serif)" }}>
-                Visible en tienda
-              </label>
-            </div>
-            <div className="flex items-center gap-3">
-              <input
-                type="checkbox"
-                name="disponibleCompra"
-                id="disponibleCompra"
-                checked={form.disponibleCompra}
-                onChange={handleChange}
-                className="w-4 h-4 accent-[#E8511A]"
-              />
-              <label htmlFor="disponibleCompra" className="text-sm cursor-pointer" style={{ color: "#1A3A5C", fontFamily: "var(--font-lora, serif)" }}>
-                Disponible para compra (muestra botón &ldquo;Comprar ahora&rdquo;)
-              </label>
-            </div>
-          </div>
-
-          {form.coverUrl && (
-            <div className="w-20 h-28 rounded-lg overflow-hidden" style={{ border: "1.5px solid #B87333" }}>
-              <Image src={form.coverUrl} alt="preview" width={80} height={112} className="object-cover w-full h-full" />
-            </div>
-          )}
-
-          <div className="flex gap-3 pt-2">
+          {/* Mobile actions */}
+          <div className="flex gap-3 xl:hidden">
+            <button
+              type="button"
+              onClick={() => router.push("/admin/libros")}
+              className="flex-1 py-3 rounded-full text-sm font-semibold transition-all hover:opacity-70"
+              style={{ border: "1.5px solid #B87333", color: "#1A3A5C", fontFamily: "var(--font-cinzel, serif)" }}
+            >
+              Cancelar
+            </button>
             <button
               type="submit"
               disabled={saving}
-              className="flex-1 py-2.5 rounded-full text-sm font-semibold transition-all hover:opacity-90 disabled:opacity-50"
+              className="flex-1 py-3 rounded-full text-sm font-semibold transition-all hover:opacity-90 disabled:opacity-50"
               style={{ background: "linear-gradient(90deg, #E8511A, #B87333)", color: "#F5EDD6", fontFamily: "var(--font-cinzel, serif)" }}
             >
               {saving ? "Guardando…" : "Guardar cambios"}
             </button>
-            <button
-              type="button"
-              onClick={() => router.push("/admin/libros")}
-              className="px-6 py-2.5 rounded-full text-sm font-semibold transition-all hover:opacity-70"
-              style={{ background: "transparent", border: "1.5px solid #B87333", color: "#1A3A5C", fontFamily: "var(--font-cinzel, serif)" }}
-            >
-              Cancelar
-            </button>
           </div>
-        </form>
-      </div>
+        </div>
+
+        {/* RIGHT: uploads + preview */}
+        <div className="flex flex-col gap-3 xl:sticky xl:top-4 xl:self-start">
+
+          {/* Cover preview */}
+          <section className="rounded-2xl border-2 overflow-hidden" style={{ borderColor: "#B87333", boxShadow: "0 4px 24px rgba(26,58,92,0.10)" }}>
+            <div className="relative w-full aspect-[3/4] overflow-hidden" style={{ background: "linear-gradient(135deg,#1A3A5C,#1F4FA3)" }}>
+              {form.coverUrl ? (
+                <Image src={form.coverUrl} alt="Portada" fill className="object-cover" />
+              ) : (
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 opacity-40">
+                  <BookOpen size={40} style={{ color: "#F5EDD6" }} />
+                  <span className="text-xs tracking-widest uppercase" style={{ color: "#F5EDD6", fontFamily: "var(--font-cinzel, serif)" }}>Sin portada</span>
+                </div>
+              )}
+              {form.nombre && (
+                <div className="absolute bottom-0 left-0 right-0 p-4" style={{ background: "linear-gradient(0deg,rgba(26,58,92,0.9),transparent)" }}>
+                  <p className="text-xs font-bold leading-tight" style={{ color: "#F5EDD6", fontFamily: "var(--font-cinzel, serif)" }}>{form.nombre}</p>
+                  {form.autor && <p className="text-[0.6rem] mt-1 opacity-80" style={{ color: "#B87333", fontFamily: "var(--font-lora, serif)" }}>{form.autor}</p>}
+                </div>
+              )}
+            </div>
+            <div className="p-3" style={{ background: "linear-gradient(160deg,#ede4cb 0%,#ddd0b0 100%)" }}>
+              <span className="text-[0.55rem] tracking-[0.2em] uppercase" style={{ color: "#B87333", fontFamily: "var(--font-cinzel, serif)" }}>Vista previa portada</span>
+            </div>
+          </section>
+
+          {/* Archivos */}
+          <section className="rounded-xl p-4 border-2" style={{ background: "linear-gradient(160deg,#ede4cb 0%,#ddd0b0 100%)", borderColor: "#B87333", boxShadow: "0 4px 24px rgba(26,58,92,0.08)" }}>
+            <div className="flex items-center gap-2 mb-3">
+              <Upload size={14} style={{ color: "#B87333" }} />
+              <span className="text-[0.6rem] tracking-[0.25em] uppercase font-semibold" style={{ color: "#B87333", fontFamily: "var(--font-cinzel, serif)" }}>Archivos</span>
+            </div>
+
+            <div className="flex flex-col gap-2">
+              {([
+                { field: "coverUrl", label: "Portada", bucket: "book-covers", accept: "image/*", icon: <BookOpen size={13} /> },
+                { field: "authorImageUrl", label: "Imagen autor", bucket: "author-images", accept: "image/*", icon: <User size={13} /> },
+                { field: "pdfUrl", label: "PDF / E-Book", bucket: "pdfs", accept: "application/pdf", icon: <FileText size={13} /> },
+              ] as const).map(({ field, label, bucket, accept, icon }) => {
+                const loaded = !!(form as Record<string, unknown>)[field];
+                const isUploading = uploading[field];
+                return (
+                  <div key={field}>
+                    <label className={labelCls} style={labelStyle}>{icon}{label}</label>
+                    <div className="flex items-center gap-2">
+                      <label
+                        className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-xs border-2 cursor-pointer transition-all hover:border-[#E8511A]"
+                        style={{
+                          background: loaded ? "#2E6B3E12" : "#F5EDD6",
+                          borderColor: loaded ? "#2E6B3E80" : "#B87333",
+                          color: loaded ? "#2E6B3E" : "#1A3A5C",
+                          fontFamily: "var(--font-lora, serif)",
+                          opacity: isUploading ? 0.6 : 1,
+                        }}
+                      >
+                        {isUploading ? (
+                          <>
+                            <div className="animate-spin w-3 h-3 rounded-full border" style={{ borderColor: "#B87333", borderTopColor: "transparent" }} />
+                            <span>Subiendo…</span>
+                          </>
+                        ) : loaded ? (
+                          <>
+                            <CheckCircle2 size={13} style={{ color: "#2E6B3E" }} />
+                            <span className="font-semibold">Cargado</span>
+                          </>
+                        ) : (
+                          <>
+                            <Upload size={13} style={{ color: "#B87333" }} />
+                            <span>Seleccionar</span>
+                          </>
+                        )}
+                        <input
+                          type="file"
+                          accept={accept}
+                          className="hidden"
+                          disabled={isUploading}
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) uploadFile(field, bucket, file);
+                          }}
+                        />
+                      </label>
+                      {loaded && (
+                        <button
+                          type="button"
+                          onClick={() => setForm((prev) => ({ ...prev, [field]: "" }))}
+                          className="p-2.5 rounded-xl border-2 transition-all hover:border-[#E8511A] hover:text-[#E8511A]"
+                          style={{ borderColor: "#B87333", color: "#B87333", background: "#F5EDD6" }}
+                          title="Quitar"
+                        >
+                          <X size={13} />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+
+          {/* Author image preview */}
+          {form.authorImageUrl && (
+            <section className="rounded-2xl border-2 overflow-hidden" style={{ borderColor: "#B87333" }}>
+              <div className="relative w-full aspect-square overflow-hidden" style={{ background: "#1A3A5C" }}>
+                <Image src={form.authorImageUrl} alt="Autor" fill className="object-cover" />
+              </div>
+              <div className="p-3" style={{ background: "linear-gradient(160deg,#ede4cb 0%,#ddd0b0 100%)" }}>
+                <span className="text-[0.55rem] tracking-[0.2em] uppercase" style={{ color: "#B87333", fontFamily: "var(--font-cinzel, serif)" }}>Foto del autor</span>
+              </div>
+            </section>
+          )}
+        </div>
+      </form>
     </div>
   );
 }

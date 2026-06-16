@@ -9,17 +9,31 @@ export async function GET(req: NextRequest) {
 
   try {
     const [records, total] = await Promise.all([
-      (prisma as any).donation.findMany({
+      prisma.ebookUser.findMany({
         orderBy: { createdAt: "desc" },
         take: limit,
         skip: offset,
+        include: { _count: { select: { accessLogs: true } } },
       }),
-      (prisma as any).donation.count(),
+      prisma.ebookUser.count(),
     ]);
 
-    return NextResponse.json({ records, total });
+    return NextResponse.json({
+      records: records.map((u: any) => ({
+        id: u.id,
+        fullName: u.fullName,
+        email: u.email,
+        phone: u.phone,
+        city: u.city,
+        country: u.country,
+        createdAt: u.createdAt,
+        lastAccessAt: u.lastAccessAt,
+        totalAccesos: u._count.accessLogs,
+      })),
+      total,
+    });
   } catch (err) {
-    console.error("[admin/donations]", err);
+    console.error("[admin/ebook/users]", err);
     return NextResponse.json({ error: "Error interno" }, { status: 500 });
   }
 }

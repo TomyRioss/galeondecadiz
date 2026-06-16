@@ -197,6 +197,7 @@ export default function DonacionesPage() {
           >
             {status === "loading" ? "Redirigiendo a MercadoPago..." : "Pagar con MercadoPago"}
           </button>
+
         </form>
       </section>
 

@@ -11,15 +11,17 @@ import {
   LogOut,
   Mail,
   Heart,
+  BookMarked,
 } from "lucide-react";
 
 const navItems = [
-  { label: "Contactos",   href: "/admin/contactos",   Icon: Mail },
-  { label: "Pedidos",     href: "/admin/pedidos",     Icon: ShoppingCart },
-  { label: "Libros",      href: "/admin/libros",      Icon: BookOpen },
-  { label: "Usuarios",    href: "/admin/usuarios",    Icon: Users },
-  { label: "Testimonios", href: "/admin/testimonios", Icon: MessageSquare },
-  { label: "Donaciones",  href: "/admin/donaciones",  Icon: Heart },
+  { label: "Contactos",      href: "/admin/contactos",   Icon: Mail },
+  { label: "Pedidos",        href: "/admin/pedidos",     Icon: ShoppingCart },
+  { label: "Libros",         href: "/admin/libros",      Icon: BookOpen },
+  { label: "Lectores E-Book",href: "/admin/ebook",       Icon: BookMarked },
+  { label: "Usuarios",       href: "/admin/usuarios",    Icon: Users },
+  { label: "Testimonios",    href: "/admin/testimonios", Icon: MessageSquare },
+  { label: "Donaciones",     href: "/admin/donaciones",  Icon: Heart },
 ];
 
 interface AdminSidebarProps {
@@ -178,12 +180,6 @@ export default function AdminSidebar({ userEmail }: AdminSidebarProps) {
           </button>
         </div>
 
-        <p
-          className="text-center mt-4 text-[0.5rem] tracking-widest uppercase"
-          style={{ color: "rgba(184,115,51,0.25)", fontFamily: "var(--font-cinzel, serif)" }}
-        >
-          Fundación · NIT 900.544.600-9
-        </p>
       </div>
     </aside>
   );

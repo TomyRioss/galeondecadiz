@@ -11,12 +11,11 @@ export async function POST(req: NextRequest) {
     const user = await (prisma as any).ebookUser.findUnique({ where: { email } });
 
     if (user) {
-      // V3: update last_access_at
       await (prisma as any).ebookUser.update({
         where: { email },
         data: { lastAccessAt: new Date() },
       });
-      return NextResponse.json({ exists: true, viewerUrl: null });
+      return NextResponse.json({ exists: true, userId: user.id });
     }
 
     return NextResponse.json({ exists: false });

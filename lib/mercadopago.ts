@@ -33,7 +33,7 @@ export async function createPreference(params: CreatePreferenceParams) {
           title: params.bookNombre,
           quantity: 1,
           unit_price: params.monto,
-          currency_id: params.moneda === "USD" ? "USD" : "ARS",
+          currency_id: params.moneda === "USD" ? "USD" : "COP",
         },
       ],
       payer: { email: params.buyerEmail },

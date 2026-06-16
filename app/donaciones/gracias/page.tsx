@@ -15,6 +15,14 @@ function DonacionesGraciasContent() {
   useEffect(() => {
     if (registered.current) return;
     registered.current = true;
+    const paymentId = params.get("payment_id");
+    if (paymentId) {
+      fetch("/api/donations/confirm", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ payment_id: paymentId }),
+      }).catch((e) => console.error("[gracias/confirm]", e));
+    }
     setDone(true);
   }, [params]);
 

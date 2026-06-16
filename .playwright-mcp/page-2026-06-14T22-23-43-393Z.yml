@@ -1,0 +1,21 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e4]:
+    - generic [ref=e5]:
+      - paragraph [ref=e6]: Panel Administrativo
+      - heading "Galeona de Cádiz" [level=1] [ref=e7]
+    - generic [ref=e8]:
+      - generic [ref=e9]:
+        - generic [ref=e10]: Correo electrónico
+        - textbox "Correo electrónico" [ref=e11]:
+          - /placeholder: admin@galeonadecadiz.org
+      - generic [ref=e12]:
+        - generic [ref=e13]: Contraseña
+        - generic [ref=e14]:
+          - textbox "Contraseña" [ref=e15]:
+            - /placeholder: ••••••••
+          - button [ref=e16]:
+            - img [ref=e17]
+      - button "Ingresar" [ref=e20]
+  - button "Open Next.js Dev Tools" [ref=e26] [cursor=pointer]:
+    - img [ref=e27]
+  - alert [ref=e30]
