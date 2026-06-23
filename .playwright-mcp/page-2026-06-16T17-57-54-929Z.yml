@@ -1,0 +1,51 @@
+- generic [ref=e13]:
+  - list [ref=e15]:
+    - listitem [ref=e16]:
+      - link "NOSOTROS" [ref=e17] [cursor=pointer]:
+        - /url: https://www.galeonadecadiz.org/
+    - listitem [ref=e18]:
+      - generic [ref=e19]: LIBROS Y ARTE
+    - listitem [ref=e20]:
+      - generic [ref=e21]: CAPACITACIONES
+    - listitem [ref=e22]:
+      - generic [ref=e23]: DEVOCIONALES
+    - listitem [ref=e24]:
+      - link "AUSPICIOS Y PAGOS" [ref=e25] [cursor=pointer]:
+        - /url: https://docs.google.com/viewer?url=https://www.galeonadecadiz.org/pdf/pagos.pdf
+    - listitem [ref=e26]:
+      - link "SALIR" [ref=e27] [cursor=pointer]:
+        - /url: about:blank
+  - link "Para ver EDITORIAL click aqui" [ref=e29] [cursor=pointer]:
+    - /url: https://docs.google.com/viewer?url=http://www.galeonadecadiz.org/pdf/ae-1.pdf
+    - generic [ref=e30]: Para ver EDITORIAL click aqui
+  - generic [ref=e31]:
+    - paragraph [ref=e32]:
+      - link "Facebook" [ref=e33] [cursor=pointer]:
+        - /url: https://www.facebook.com/patronodecomlombia
+      - link "Instagram" [ref=e34] [cursor=pointer]:
+        - /url: https://www.instagram.com/fundaciongaleona/
+      - text: YouTube LinkedIn
+      - link "Pinterest" [ref=e35] [cursor=pointer]:
+        - /url: https://co.pinterest.com/galeonadecadiz/
+    - paragraph [ref=e36]: Twitter TikTok Spotify Speaker Google podcast
+  - generic [ref=e38]:
+    - generic [ref=e40]:
+      - link [ref=e44] [cursor=pointer]:
+        - /url: Canon-Lector/
+      - link [ref=e48] [cursor=pointer]:
+        - /url: https://docs.google.com/viewer?url=http://www.galeonadecadiz.org/pdf/consultoria.pdf
+    - generic [ref=e50]:
+      - link [ref=e54] [cursor=pointer]:
+        - /url: https://www.galeonadecadiz.org/pdf/nueva_plataforma.pdf
+      - link [ref=e58] [cursor=pointer]:
+        - /url: https://docs.google.com/viewer?url=http://www.galeonadecadiz.org/pdf/accion-cultural.pdf
+  - generic [ref=e62]:
+    - heading "Videos" [level=3] [ref=e66]:
+      - link "Videos" [ref=e67] [cursor=pointer]:
+        - /url: video/
+    - link "Contáctenos" [ref=e71] [cursor=pointer]:
+      - /url: contactenos/
+      - generic [ref=e72]: Contáctenos
+    - heading "Podcasts" [level=3] [ref=e76]:
+      - link "Podcasts" [ref=e77] [cursor=pointer]:
+        - /url: podcasts/
