@@ -308,7 +308,7 @@ export default function EditLibroPage({ params }: { params: Promise<{ id: string
                     </div>
                     <p className="text-xs" style={{ color: "#1B6CA8", fontFamily: "var(--font-lora, serif)" }}>{desc}</p>
                   </div>
-                  {(form as Record<string, unknown>)[name] && (
+                  {Boolean((form as Record<string, unknown>)[name]) && (
                     <CheckCircle2 size={16} style={{ color: "#E8511A", flexShrink: 0 }} />
                   )}
                 </label>

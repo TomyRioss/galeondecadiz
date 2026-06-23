@@ -100,11 +100,16 @@ export default function BookFlipViewer({ pdfUrl }: Props) {
                     border: "1px solid #d4c9a8",
                     overflow: "hidden",
                   }}
+                  onMouseDown={(e) => {
+                    if ((e.target as Element).closest("a, .linkAnnotation, .buttonWidgetAnnotation")) {
+                      e.stopPropagation();
+                    }
+                  }}
                 >
                   <Page
                     pageNumber={i + 1}
                     width={pageWidth}
-                    renderAnnotationLayer={false}
+                    renderAnnotationLayer={true}
                     renderTextLayer={false}
                   />
                 </div>

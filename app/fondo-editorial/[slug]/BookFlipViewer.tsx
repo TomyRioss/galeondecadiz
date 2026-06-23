@@ -86,7 +86,7 @@ export default function BookFlipViewer({ pdfUrl }: Props) {
                 <Page
                   pageNumber={i + 1}
                   width={pageWidth}
-                  renderAnnotationLayer={false}
+                  renderAnnotationLayer={true}
                   renderTextLayer={false}
                 />
               </div>
