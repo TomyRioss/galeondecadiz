@@ -38,6 +38,35 @@ export default function BookFlipViewer({ pdfUrl }: Props) {
     return () => window.removeEventListener("resize", update);
   }, []);
 
+  // After page-flip mounts, add bubble listeners to each page child so
+  // annotation clicks stop propagating before reaching stf__parent (page-flip root).
+  useEffect(() => {
+    if (!containerRef.current || numPages === 0) return;
+
+    const handler = (e: MouseEvent) => {
+      if ((e.target as Element).closest("a, .linkAnnotation, .buttonWidgetAnnotation")) {
+        e.stopPropagation();
+      }
+    };
+
+    // Short delay to ensure page-flip has finished DOM setup
+    const timer = setTimeout(() => {
+      const wrapper = containerRef.current?.querySelector(".stf__wrapper");
+      if (!wrapper) return;
+      const pages = Array.from(wrapper.children) as HTMLElement[];
+      pages.forEach((p) => p.addEventListener("mousedown", handler));
+    }, 200);
+
+    return () => {
+      clearTimeout(timer);
+      const wrapper = containerRef.current?.querySelector(".stf__wrapper");
+      if (!wrapper) return;
+      (Array.from(wrapper.children) as HTMLElement[]).forEach((p) =>
+        p.removeEventListener("mousedown", handler)
+      );
+    };
+  }, [numPages, pageWidth, isMobile]);
+
   const onFlip = useCallback((e: { data: number }) => setCurrentPage(e.data + 1), []);
   const goPrev = () => bookRef.current?.pageFlip()?.flipPrev();
   const goNext = () => bookRef.current?.pageFlip()?.flipNext();
@@ -99,11 +128,6 @@ export default function BookFlipViewer({ pdfUrl }: Props) {
                     background: "#fffdf5",
                     border: "1px solid #d4c9a8",
                     overflow: "hidden",
-                  }}
-                  onMouseDown={(e) => {
-                    if ((e.target as Element).closest("a, .linkAnnotation, .buttonWidgetAnnotation")) {
-                      e.stopPropagation();
-                    }
                   }}
                 >
                   <Page

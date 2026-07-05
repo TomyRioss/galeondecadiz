@@ -25,6 +25,45 @@ model Book {
   tipo        BookTipo @default(IMPRESO)
   createdAt   DateTime @default(now())
   orders      Order[]
+
+  // Ficha bibliográfica — identificación
+  subtitulo           String?
+  basadoEnLaObraDe    String?
+  editorAcademico     String?
+  traductorCompilador String?
+  clasificacionAutor  String?
+  coedicion           String?
+  fechaAparicion      String?
+  obraActualizadaA    String?
+  editorial           String?
+
+  // Ficha bibliográfica — detalle libro
+  tema        String?
+  genero      String?
+  resena      String? @db.Text
+  caratula    String?
+  dimensiones String?
+  folios      String?
+
+  // Ficha bibliográfica — comercial / índice temático
+  isbnImpreso         String?
+  isbnEbook           String?
+  envioIncluido       Boolean?
+  costoEnvioColombia  String?
+  costoEnvioExterior  String?
+  promocion           String?
+  valorNeto           String?
+  impuestos           String?
+
+  // Ficha bibliográfica — audiolibro / videolibro
+  audiolibroDisponible Boolean? @default(false)
+  audiolibroIsbn       String?
+  videolibroDisponible Boolean? @default(false)
+  videolibroIsbn       String?
+
+  // Galería de imágenes
+  galleryImages  String[] @default([])
+  pdfPageImages  String[] @default([])
 }
 
 model Order {

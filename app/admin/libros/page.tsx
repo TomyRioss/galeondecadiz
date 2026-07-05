@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { BookOpen, Plus, Star, Eye, EyeOff, Pencil, ShoppingCart } from "lucide-react";
+import { BookOpen, Plus, Star, Eye, EyeOff, Pencil, ShoppingCart, Trash2 } from "lucide-react";
 
 interface Book {
   id: string;
@@ -24,40 +24,11 @@ interface Book {
   disponibleCompra: boolean;
 }
 
-const EMPTY_FORM = {
-  slug: "",
-  nombre: "",
-  autor: "",
-  descripcion: "",
-  precioCop: "",
-  precioUsd: "",
-  coverUrl: "",
-  authorImageUrl: "",
-  authorBio: "",
-  pdfUrl: "",
-  activo: true,
-  tipo: "IMPRESO" as "IMPRESO" | "EBOOK" | "AMBOS",
-};
-
-const inputStyle = {
-  background: "#F5EDD6",
-  border: "1.5px solid #B87333",
-  color: "#1A3A5C",
-  fontFamily: "var(--font-lora, serif)",
-};
-
-const labelCls = "text-[0.6rem] tracking-[0.2em] uppercase font-semibold";
-const labelColor = { color: "#B87333", fontFamily: "var(--font-cinzel, serif)" };
-
 export default function LibrosPage() {
   const router = useRouter();
   const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(true);
-  const [showForm, setShowForm] = useState(false);
-  const [form, setForm] = useState(EMPTY_FORM);
-  const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState<{ type: "ok" | "err"; text: string } | null>(null);
-  const [uploading, setUploading] = useState<Record<string, boolean>>({});
 
   async function load() {
     setLoading(true);
@@ -74,73 +45,17 @@ export default function LibrosPage() {
 
   useEffect(() => { load(); }, []);
 
-  function openNew() {
-    setForm(EMPTY_FORM);
-    setShowForm(true);
-    setMsg(null);
-  }
-
-  function toSlug(str: string) {
-    return str
-      .toLowerCase()
-      .normalize("NFD")
-      .replace(/[̀-ͯ]/g, "")
-      .replace(/[^a-z0-9\s-]/g, "")
-      .trim()
-      .replace(/\s+/g, "-");
-  }
-
-  function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
-    const { name, value, type } = e.target;
-    setForm((prev) => {
-      const updated: Record<string, unknown> = {
-        ...prev,
-        [name]: type === "checkbox" ? (e.target as HTMLInputElement).checked : value,
-      };
-      if (name === "nombre") updated.slug = toSlug(value);
-      return updated as typeof EMPTY_FORM;
-    });
-  }
-
-  async function uploadFile(field: "coverUrl" | "authorImageUrl" | "pdfUrl", bucket: string, file: File) {
-    setUploading((prev) => ({ ...prev, [field]: true }));
+  async function deleteBook(b: Book) {
+    if (!confirm(`¿Eliminar "${b.nombre}"? Esta acción no se puede deshacer.`)) return;
     try {
-      const fd = new FormData();
-      fd.append("file", file);
-      fd.append("bucket", bucket);
-      const res = await fetch("/api/admin/upload", { method: "POST", body: fd });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? "Error al subir");
-      setForm((prev) => ({ ...prev, [field]: data.url }));
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "Error desconocido";
-      console.error("[uploadFile]", err);
-      setMsg({ type: "err", text: `Error subiendo ${field}: ${msg}` });
-    } finally {
-      setUploading((prev) => ({ ...prev, [field]: false }));
-    }
-  }
-
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setSaving(true);
-    setMsg(null);
-    try {
-      const res = await fetch("/api/admin/libros", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? "Error");
-      setMsg({ type: "ok", text: "Libro creado." });
-      setShowForm(false);
+      const res = await fetch(`/api/admin/libros?id=${b.id}`, { method: "DELETE" });
+      if (!res.ok) throw new Error((await res.json()).error ?? "Error");
+      setMsg({ type: "ok", text: "Libro eliminado." });
       load();
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Error desconocido";
+      console.error("[deleteBook]", err);
       setMsg({ type: "err", text: message });
-    } finally {
-      setSaving(false);
     }
   }
 
@@ -177,7 +92,7 @@ export default function LibrosPage() {
           </div>
         </div>
         <button
-          onClick={openNew}
+          onClick={() => router.push("/admin/libros/new")}
           className="flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold transition-all hover:opacity-90 hover:-translate-y-px"
           style={{ background: "linear-gradient(90deg, #E8511A, #B87333)", color: "#F5EDD6", fontFamily: "var(--font-cinzel, serif)" }}
         >
@@ -199,182 +114,6 @@ export default function LibrosPage() {
         >
           <span>{msg.type === "ok" ? "✓" : "✕"}</span>
           {msg.text}
-        </div>
-      )}
-
-      {/* Formulario */}
-      {showForm && (
-        <div
-          className="rounded-2xl p-6 md:p-8 border-2"
-          style={{
-            background: "linear-gradient(160deg, #ede4cb 0%, #ddd0b0 100%)",
-            borderColor: "#B87333",
-            boxShadow: "0 8px 32px rgba(26,58,92,0.12)",
-          }}
-        >
-          <h2 className="text-lg font-bold mb-6" style={{ color: "#1A3A5C", fontFamily: "var(--font-cinzel, serif)" }}>
-            {"Nuevo libro"}
-          </h2>
-          <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {[
-                { name: "nombre", label: "Nombre del libro", type: "text", required: true },
-                { name: "autor", label: "Autor/a", type: "text", required: true },
-              ].map(({ name, label, type, required }) => (
-                <div key={name} className="flex flex-col gap-1.5">
-                  <label className={labelCls} style={labelColor}>{label}</label>
-                  <input
-                    name={name}
-                    type={type}
-                    required={required}
-                    value={(form as Record<string, unknown>)[name] as string}
-                    onChange={handleChange}
-                    className="w-full px-4 py-2.5 rounded-lg text-sm border outline-none focus:border-[#E8511A] transition-colors"
-                    style={inputStyle}
-                  />
-                </div>
-              ))}
-            </div>
-
-            {/* Uploads */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {([
-                { field: "coverUrl", label: "Portada", bucket: "book-covers", accept: "image/*" },
-                { field: "authorImageUrl", label: "Imagen autor", bucket: "author-images", accept: "image/*" },
-                { field: "pdfUrl", label: "PDF / E-Book", bucket: "pdfs", accept: "application/pdf" },
-              ] as const).map(({ field, label, bucket, accept }) => (
-                <div key={field} className="flex flex-col gap-1.5">
-                  <label className={labelCls} style={labelColor}>{label}</label>
-                  <label
-                    className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm border cursor-pointer transition-colors hover:border-[#E8511A]"
-                    style={{ ...inputStyle, opacity: uploading[field] ? 0.6 : 1 }}
-                  >
-                    <span style={{ color: "#1A3A5C" }}>
-                      {uploading[field] ? "Subiendo…" : (form as Record<string, unknown>)[field] ? "✓ Cargado" : "Seleccionar"}
-                    </span>
-                    <input
-                      type="file"
-                      accept={accept}
-                      className="hidden"
-                      disabled={uploading[field]}
-                      onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (file) uploadFile(field, bucket, file);
-                      }}
-                    />
-                  </label>
-                  {!!(form as Record<string, unknown>)[field] && (
-                    <button
-                      type="button"
-                      onClick={() => setForm((prev) => ({ ...prev, [field]: "" }))}
-                      className="text-xs text-center transition-opacity hover:opacity-70"
-                      style={{ color: "#B87333", fontFamily: "var(--font-cinzel, serif)" }}
-                    >
-                      Quitar
-                    </button>
-                  )}
-                </div>
-              ))}
-            </div>
-
-            <div className="flex flex-col gap-1.5">
-              <label className={labelCls} style={labelColor}>Biografía del autor (opcional)</label>
-              <textarea
-                name="authorBio"
-                rows={2}
-                value={form.authorBio}
-                onChange={handleChange}
-                className="w-full px-4 py-2.5 rounded-lg text-sm border outline-none resize-none focus:border-[#E8511A] transition-colors"
-                style={inputStyle}
-              />
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {[
-                { name: "precioCop", label: "Precio COP", type: "number", required: true },
-                { name: "precioUsd", label: "Precio USD", type: "number", required: true },
-              ].map(({ name, label, type, required }) => (
-                <div key={name} className="flex flex-col gap-1.5">
-                  <label className={labelCls} style={labelColor}>{label}</label>
-                  <input
-                    name={name}
-                    type={type}
-                    required={required}
-                    value={(form as Record<string, unknown>)[name] as string}
-                    onChange={handleChange}
-                    className="w-full px-4 py-2.5 rounded-lg text-sm border outline-none focus:border-[#E8511A] transition-colors"
-                    style={inputStyle}
-                  />
-                </div>
-              ))}
-              <div className="flex flex-col gap-1.5">
-                <label className={labelCls} style={labelColor}>Tipo</label>
-                <select
-                  name="tipo"
-                  value={form.tipo}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2.5 rounded-lg text-sm border outline-none focus:border-[#E8511A] transition-colors"
-                  style={inputStyle}
-                >
-                  <option value="IMPRESO">Impreso</option>
-                  <option value="EBOOK">E-Book</option>
-                  <option value="AMBOS">Ambos</option>
-                </select>
-              </div>
-            </div>
-
-            <div className="flex flex-col gap-1.5">
-              <label className={labelCls} style={labelColor}>Descripción</label>
-              <textarea
-                name="descripcion"
-                rows={3}
-                required
-                value={form.descripcion}
-                onChange={handleChange}
-                className="w-full px-4 py-2.5 rounded-lg text-sm border outline-none resize-none focus:border-[#E8511A] transition-colors"
-                style={inputStyle}
-              />
-            </div>
-
-            <div className="flex items-center gap-3">
-              <input
-                type="checkbox"
-                name="activo"
-                id="activo"
-                checked={form.activo}
-                onChange={handleChange}
-                className="w-4 h-4 accent-[#E8511A]"
-              />
-              <label htmlFor="activo" className="text-sm cursor-pointer" style={{ color: "#1A3A5C", fontFamily: "var(--font-lora, serif)" }}>
-                Visible en tienda
-              </label>
-            </div>
-
-            {form.coverUrl && (
-              <div className="w-20 h-28 rounded-lg overflow-hidden" style={{ border: "1.5px solid #B87333" }}>
-                <Image src={form.coverUrl} alt="preview" width={80} height={112} className="object-cover w-full h-full" />
-              </div>
-            )}
-
-            <div className="flex gap-3 pt-2">
-              <button
-                type="submit"
-                disabled={saving}
-                className="flex-1 py-2.5 rounded-full text-sm font-semibold transition-all hover:opacity-90 disabled:opacity-50"
-                style={{ background: "linear-gradient(90deg, #E8511A, #B87333)", color: "#F5EDD6", fontFamily: "var(--font-cinzel, serif)" }}
-              >
-                {saving ? "Guardando…" : "Crear libro"}
-              </button>
-              <button
-                type="button"
-                onClick={() => setShowForm(false)}
-                className="px-6 py-2.5 rounded-full text-sm font-semibold transition-all hover:opacity-70"
-                style={{ background: "transparent", border: "1.5px solid #B87333", color: "#1A3A5C", fontFamily: "var(--font-cinzel, serif)" }}
-              >
-                Cancelar
-              </button>
-            </div>
-          </form>
         </div>
       )}
 
@@ -486,7 +225,7 @@ export default function LibrosPage() {
               {/* Acciones */}
               <div className="flex items-center gap-2 flex-shrink-0 opacity-60 group-hover:opacity-100 transition-opacity">
                 <button
-                  onClick={() => router.push(`/admin/libros/${b.id}`)}
+                  onClick={() => router.push(`/admin/libros/edit/${b.slug}`)}
                   title="Editar"
                   className="w-8 h-8 flex items-center justify-center rounded-full transition-colors hover:bg-white/50"
                   style={{ color: "#1A3A5C" }}
@@ -508,6 +247,14 @@ export default function LibrosPage() {
                   style={{ color: b.starred ? "#C9A447" : "#1A3A5C" }}
                 >
                   <Star size={18} fill={b.starred ? "#C9A447" : "none"} />
+                </button>
+                <button
+                  onClick={() => deleteBook(b)}
+                  title="Eliminar"
+                  className="w-8 h-8 flex items-center justify-center rounded-full transition-colors hover:bg-white/50"
+                  style={{ color: "#C0392B" }}
+                >
+                  <Trash2 size={18} />
                 </button>
               </div>
             </div>

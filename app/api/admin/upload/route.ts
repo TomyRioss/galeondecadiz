@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { getSupabaseAdmin } from "@/lib/supabase-server";
 
-const ALLOWED_BUCKETS = ["book-covers", "author-images", "pdfs"] as const;
+const ALLOWED_BUCKETS = ["book-covers", "author-images", "pdfs", "book-gallery"] as const;
 type Bucket = (typeof ALLOWED_BUCKETS)[number];
 
 export async function POST(req: NextRequest) {

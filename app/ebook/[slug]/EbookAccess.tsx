@@ -1,17 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { FaLock, FaBookOpen } from "react-icons/fa6";
+import { Country, State, City } from "country-state-city";
 
-// PDF URL stored server-side — never exposed as public download (V4)
-// Will be replaced with signed URL from Supabase Storage once T26/T27 approved
 const EBOOK_VIEWER_URL: Record<string, string | null> = {
-  "nuestra-senora-de-chiquinquira": null, // placeholder until client delivers PDF
+  "nuestra-senora-de-chiquinquira": null,
 };
 
 const BOOK_TITLES: Record<string, string> = {
   "nuestra-senora-de-chiquinquira": "Nuestra Señora de Chiquinquirá de La Estrella",
 };
+
 
 type Step = "check" | "register" | "viewer";
 
@@ -27,21 +27,18 @@ export default function EbookAccess({ slug }: EbookAccessProps) {
     full_name: "",
     email: "",
     phone: "",
+    countryCode: "",
+    stateCode: "",
     city: "",
-    country: "",
     accepted_terms: false,
   });
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [viewerUrl, setViewerUrl] = useState<string | null>(null);
 
-  function handleFormChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const { name, value, type } = e.target;
-    setForm((prev) => ({
-      ...prev,
-      [name]: type === "checkbox" ? e.target.checked : value,
-    }));
-  }
+  const allCountries = useMemo(() => Country.getAllCountries(), []);
+  const states = useMemo(() => form.countryCode ? State.getStatesOfCountry(form.countryCode) : [], [form.countryCode]);
+  const cities = useMemo(() => form.countryCode && form.stateCode ? City.getCitiesOfState(form.countryCode, form.stateCode) : [], [form.countryCode, form.stateCode]);
 
   async function handleCheckEmail(e: React.FormEvent) {
     e.preventDefault();
@@ -80,10 +77,12 @@ export default function EbookAccess({ slug }: EbookAccessProps) {
     setErrorMsg("");
     setLoading(true);
     try {
+      const countryName = Country.getCountryByCode(form.countryCode)?.name ?? form.countryCode;
+      const stateName = form.stateCode ? State.getStateByCodeAndCountry(form.stateCode, form.countryCode)?.name ?? form.stateCode : "";
       const res = await fetch("/api/ebook/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...form, slug }),
+        body: JSON.stringify({ full_name: form.full_name, email: form.email, phone: form.phone, country: countryName, department: stateName, city: form.city, accepted_terms: form.accepted_terms, slug }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Error");
@@ -210,19 +209,13 @@ export default function EbookAccess({ slug }: EbookAccessProps) {
               Primera vez. Completá tus datos para acceder al e-book.
             </p>
 
-            {[
+            {([
               { name: "full_name", label: "Nombre completo", type: "text" },
               { name: "email", label: "Correo electrónico", type: "email" },
               { name: "phone", label: "WhatsApp", type: "text" },
-              { name: "city", label: "Ciudad", type: "text" },
-              { name: "country", label: "País", type: "text" },
-            ].map(({ name, label, type }) => (
+            ] as { name: keyof typeof form; label: string; type: string }[]).map(({ name, label, type }) => (
               <div key={name} className="flex flex-col gap-1">
-                <label
-                  htmlFor={`reg_${name}`}
-                  className="text-xs font-semibold tracking-widest uppercase"
-                  style={labelStyle}
-                >
+                <label htmlFor={`reg_${name}`} className="text-xs font-semibold tracking-widest uppercase" style={labelStyle}>
                   {label}
                 </label>
                 <input
@@ -230,20 +223,87 @@ export default function EbookAccess({ slug }: EbookAccessProps) {
                   name={name}
                   type={type}
                   required
-                  value={(form as any)[name]}
-                  onChange={handleFormChange}
+                  value={form[name] as string}
+                  onChange={(e) => setForm((p) => ({ ...p, [name]: e.target.value }))}
                   className={inputClass}
                   style={inputStyle}
                 />
               </div>
             ))}
 
+            {/* País */}
+            <div className="flex flex-col gap-1">
+              <label htmlFor="reg_country" className="text-xs font-semibold tracking-widest uppercase" style={labelStyle}>
+                País
+              </label>
+              <select
+                id="reg_country"
+                required
+                value={form.countryCode}
+                onChange={(e) => setForm((p) => ({ ...p, countryCode: e.target.value, stateCode: "", city: "" }))}
+                className={inputClass}
+                style={inputStyle}
+              >
+                <option value="">Seleccionar país</option>
+                {allCountries.map((c) => <option key={c.isoCode} value={c.isoCode}>{c.name}</option>)}
+              </select>
+            </div>
+
+            {/* Departamento / Región */}
+            {form.countryCode && states.length > 0 && (
+              <div className="flex flex-col gap-1">
+                <label htmlFor="reg_state" className="text-xs font-semibold tracking-widest uppercase" style={labelStyle}>
+                  {form.countryCode === "CO" ? "Departamento" : "Región / Estado / Provincia"}
+                </label>
+                <select
+                  id="reg_state"
+                  value={form.stateCode}
+                  onChange={(e) => setForm((p) => ({ ...p, stateCode: e.target.value, city: "" }))}
+                  className={inputClass}
+                  style={inputStyle}
+                >
+                  <option value="">Seleccionar</option>
+                  {states.map((s) => <option key={s.isoCode} value={s.isoCode}>{s.name}</option>)}
+                </select>
+              </div>
+            )}
+
+            {/* Ciudad */}
+            {form.countryCode && (form.stateCode || states.length === 0) && (
+              <div className="flex flex-col gap-1">
+                <label htmlFor="reg_city" className="text-xs font-semibold tracking-widest uppercase" style={labelStyle}>
+                  Ciudad
+                </label>
+                {cities.length > 0 ? (
+                  <select
+                    id="reg_city"
+                    value={form.city}
+                    onChange={(e) => setForm((p) => ({ ...p, city: e.target.value }))}
+                    className={inputClass}
+                    style={inputStyle}
+                  >
+                    <option value="">Seleccionar ciudad</option>
+                    {cities.map((c) => <option key={c.name} value={c.name}>{c.name}</option>)}
+                  </select>
+                ) : (
+                  <input
+                    id="reg_city"
+                    type="text"
+                    value={form.city}
+                    onChange={(e) => setForm((p) => ({ ...p, city: e.target.value }))}
+                    className={inputClass}
+                    style={inputStyle}
+                  />
+                )}
+              </div>
+            )}
+
             <label className="flex items-start gap-3 cursor-pointer">
               <input
                 type="checkbox"
                 name="accepted_terms"
                 checked={form.accepted_terms}
-                onChange={handleFormChange}
+                onChange={(e) => setForm((p) => ({ ...p, accepted_terms: e.target.checked }))}
                 className="mt-0.5 flex-shrink-0"
               />
               <span

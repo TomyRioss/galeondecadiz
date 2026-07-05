@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import BookFlipViewerDynamic from "./BookFlipViewerDynamic";
+import { Country, State, City } from "country-state-city";
 
 interface Props {
   slug: string;
@@ -22,10 +23,15 @@ export default function EbookViewerClient({ slug, bookNombre }: Props) {
     full_name: "",
     email: "",
     phone: "",
+    countryCode: "",
+    stateCode: "",
     city: "",
-    country: "",
     accepted_terms: false,
   });
+
+  const allCountries = useMemo(() => Country.getAllCountries(), []);
+  const states = useMemo(() => form.countryCode ? State.getStatesOfCountry(form.countryCode) : [], [form.countryCode]);
+  const cities = useMemo(() => form.countryCode && form.stateCode ? City.getCitiesOfState(form.countryCode, form.stateCode) : [], [form.countryCode, form.stateCode]);
 
   // On mount: check if userId already in localStorage
   useEffect(() => {
@@ -85,10 +91,12 @@ export default function EbookViewerClient({ slug, bookNombre }: Props) {
     setError(null);
 
     try {
+      const countryName = Country.getCountryByCode(form.countryCode)?.name ?? form.countryCode;
+      const stateName = form.stateCode ? State.getStateByCodeAndCountry(form.stateCode, form.countryCode)?.name ?? form.stateCode : "";
       const res = await fetch("/api/ebook/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...form, slug }),
+        body: JSON.stringify({ full_name: form.full_name, email: form.email, phone: form.phone, country: countryName, department: stateName, city: form.city, accepted_terms: form.accepted_terms, slug }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Error al registrar");
@@ -146,38 +154,91 @@ export default function EbookViewerClient({ slug, bookNombre }: Props) {
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-            {[
+            {([
               { id: "full_name", label: "Nombre completo", type: "text", required: true },
               { id: "email",     label: "Correo electrónico", type: "email", required: true, onBlur: handleEmailBlur },
               { id: "phone",     label: "Teléfono", type: "tel", required: false },
-              { id: "city",      label: "Ciudad", type: "text", required: false },
-              { id: "country",   label: "País", type: "text", required: false },
-            ].map(({ id, label, type, required, onBlur }: any) => (
+            ] as any[]).map(({ id, label, type, required, onBlur }) => (
               <div key={id} className="flex flex-col gap-1">
-                <label
-                  htmlFor={id}
-                  className="text-[0.65rem] tracking-[0.2em] uppercase font-semibold"
-                  style={{ color: "#B87333", fontFamily: "var(--font-cinzel, serif)" }}
-                >
+                <label htmlFor={id} className="text-[0.65rem] tracking-[0.2em] uppercase font-semibold" style={{ color: "#B87333", fontFamily: "var(--font-cinzel, serif)" }}>
                   {label}{required && " *"}
                 </label>
                 <input
-                  id={id}
-                  type={type}
-                  required={required}
+                  id={id} type={type} required={required}
                   value={(form as any)[id]}
                   onChange={(e) => setForm((f) => ({ ...f, [id]: e.target.value }))}
                   onBlur={onBlur}
                   className="rounded-xl px-4 py-2.5 text-sm outline-none focus:ring-2"
-                  style={{
-                    background: "#F5EDD6",
-                    border: "1.5px solid #B87333",
-                    color: "#1A3A5C",
-                    fontFamily: "var(--font-lora, serif)",
-                  }}
+                  style={{ background: "#F5EDD6", border: "1.5px solid #B87333", color: "#1A3A5C", fontFamily: "var(--font-lora, serif)" }}
                 />
               </div>
             ))}
+
+            {/* País */}
+            <div className="flex flex-col gap-1">
+              <label htmlFor="countryCode" className="text-[0.65rem] tracking-[0.2em] uppercase font-semibold" style={{ color: "#B87333", fontFamily: "var(--font-cinzel, serif)" }}>
+                País *
+              </label>
+              <select
+                id="countryCode"
+                required
+                value={form.countryCode}
+                onChange={(e) => setForm((f) => ({ ...f, countryCode: e.target.value, stateCode: "", city: "" }))}
+                className="rounded-xl px-4 py-2.5 text-sm outline-none focus:ring-2"
+                style={{ background: "#F5EDD6", border: "1.5px solid #B87333", color: "#1A3A5C", fontFamily: "var(--font-lora, serif)" }}
+              >
+                <option value="">Seleccionar país</option>
+                {allCountries.map((c) => <option key={c.isoCode} value={c.isoCode}>{c.name}</option>)}
+              </select>
+            </div>
+
+            {/* Estado / Región */}
+            {form.countryCode && states.length > 0 && (
+              <div className="flex flex-col gap-1">
+                <label htmlFor="stateCode" className="text-[0.65rem] tracking-[0.2em] uppercase font-semibold" style={{ color: "#B87333", fontFamily: "var(--font-cinzel, serif)" }}>
+                  {form.countryCode === "CO" ? "Departamento" : "Región / Estado / Provincia"}
+                </label>
+                <select
+                  id="stateCode"
+                  value={form.stateCode}
+                  onChange={(e) => setForm((f) => ({ ...f, stateCode: e.target.value, city: "" }))}
+                  className="rounded-xl px-4 py-2.5 text-sm outline-none focus:ring-2"
+                  style={{ background: "#F5EDD6", border: "1.5px solid #B87333", color: "#1A3A5C", fontFamily: "var(--font-lora, serif)" }}
+                >
+                  <option value="">Seleccionar</option>
+                  {states.map((s) => <option key={s.isoCode} value={s.isoCode}>{s.name}</option>)}
+                </select>
+              </div>
+            )}
+
+            {/* Ciudad */}
+            {form.countryCode && (form.stateCode || states.length === 0) && (
+              <div className="flex flex-col gap-1">
+                <label htmlFor="city" className="text-[0.65rem] tracking-[0.2em] uppercase font-semibold" style={{ color: "#B87333", fontFamily: "var(--font-cinzel, serif)" }}>
+                  Ciudad
+                </label>
+                {cities.length > 0 ? (
+                  <select
+                    id="city"
+                    value={form.city}
+                    onChange={(e) => setForm((f) => ({ ...f, city: e.target.value }))}
+                    className="rounded-xl px-4 py-2.5 text-sm outline-none focus:ring-2"
+                    style={{ background: "#F5EDD6", border: "1.5px solid #B87333", color: "#1A3A5C", fontFamily: "var(--font-lora, serif)" }}
+                  >
+                    <option value="">Seleccionar ciudad</option>
+                    {cities.map((c) => <option key={c.name} value={c.name}>{c.name}</option>)}
+                  </select>
+                ) : (
+                  <input
+                    id="city" type="text"
+                    value={form.city}
+                    onChange={(e) => setForm((f) => ({ ...f, city: e.target.value }))}
+                    className="rounded-xl px-4 py-2.5 text-sm outline-none focus:ring-2"
+                    style={{ background: "#F5EDD6", border: "1.5px solid #B87333", color: "#1A3A5C", fontFamily: "var(--font-lora, serif)" }}
+                  />
+                )}
+              </div>
+            )}
 
             {/* Terms */}
             <label className="flex items-start gap-3 cursor-pointer">

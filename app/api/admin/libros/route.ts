@@ -19,7 +19,14 @@ export async function POST(req: NextRequest) {
   if (!await requireAdmin()) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const body = await req.json();
-  const { slug, nombre, autor, descripcion, precioCop, precioUsd, coverUrl, authorImageUrl, authorBio, pdfUrl, activo, disponibleCompra, tipo, stock } = body;
+  const {
+    slug, nombre, autor, descripcion, precioCop, precioUsd, coverUrl, authorImageUrl, authorBio, pdfUrl, activo, disponibleCompra, tipo, stock,
+    galleryImages, pdfPageImages,
+    subtitulo, basadoEnLaObraDe, editorAcademico, traductorCompilador, clasificacionAutor, coedicion, fechaAparicion, obraActualizadaA, editorial,
+    tema, genero, resena, caratula, dimensiones, folios,
+    isbnImpreso, isbnEbook, envioIncluido, costoEnvioColombia, costoEnvioExterior, promocion, valorNeto, impuestos,
+    audiolibroDisponible, audiolibroIsbn, videolibroDisponible, videolibroIsbn,
+  } = body;
 
   if (!slug || !nombre || !autor || !descripcion) {
     return NextResponse.json({ error: "Campos requeridos faltantes" }, { status: 400 });
@@ -42,12 +49,34 @@ export async function POST(req: NextRequest) {
         activo: Boolean(activo),
         disponibleCompra: disponibleCompra !== undefined ? Boolean(disponibleCompra) : true,
         tipo: tipo || "IMPRESO",
+        galleryImages: galleryImages ?? [],
+        pdfPageImages: pdfPageImages ?? [],
+        subtitulo, basadoEnLaObraDe, editorAcademico, traductorCompilador, clasificacionAutor, coedicion, fechaAparicion, obraActualizadaA, editorial,
+        tema, genero, resena, caratula, dimensiones, folios,
+        isbnImpreso, isbnEbook, envioIncluido, costoEnvioColombia, costoEnvioExterior, promocion, valorNeto, impuestos,
+        audiolibroDisponible: Boolean(audiolibroDisponible), audiolibroIsbn, videolibroDisponible: Boolean(videolibroDisponible), videolibroIsbn,
       },
     });
     return NextResponse.json({ book });
   } catch (err: any) {
     if (err.code === "P2002") return NextResponse.json({ error: "El slug ya existe" }, { status: 400 });
     console.error("[admin/libros POST]", err);
+    return NextResponse.json({ error: "Error interno" }, { status: 500 });
+  }
+}
+
+export async function DELETE(req: NextRequest) {
+  if (!await requireAdmin()) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const { searchParams } = new URL(req.url);
+  const id = searchParams.get("id");
+  if (!id) return NextResponse.json({ error: "id requerido" }, { status: 400 });
+
+  try {
+    await prisma.book.delete({ where: { id } });
+    return NextResponse.json({ ok: true });
+  } catch (err) {
+    console.error("[admin/libros DELETE]", err);
     return NextResponse.json({ error: "Error interno" }, { status: 500 });
   }
 }
@@ -76,6 +105,20 @@ export async function PUT(req: NextRequest) {
   if (data.tipo !== undefined) updateData.tipo = data.tipo;
   if (data.starred !== undefined) updateData.starred = Boolean(data.starred);
   if (data.stock !== undefined) updateData.stock = parseInt(data.stock) || 0;
+  if (data.galleryImages !== undefined) updateData.galleryImages = data.galleryImages;
+  if (data.pdfPageImages !== undefined) updateData.pdfPageImages = data.pdfPageImages;
+  for (const field of [
+    "subtitulo", "basadoEnLaObraDe", "editorAcademico", "traductorCompilador", "clasificacionAutor",
+    "coedicion", "fechaAparicion", "obraActualizadaA", "editorial",
+    "tema", "genero", "resena", "caratula", "dimensiones", "folios",
+    "isbnImpreso", "isbnEbook", "costoEnvioColombia", "costoEnvioExterior", "promocion", "valorNeto", "impuestos",
+    "audiolibroIsbn", "videolibroIsbn",
+  ]) {
+    if (data[field] !== undefined) updateData[field] = data[field];
+  }
+  if (data.envioIncluido !== undefined) updateData.envioIncluido = Boolean(data.envioIncluido);
+  if (data.audiolibroDisponible !== undefined) updateData.audiolibroDisponible = Boolean(data.audiolibroDisponible);
+  if (data.videolibroDisponible !== undefined) updateData.videolibroDisponible = Boolean(data.videolibroDisponible);
 
   try {
     let book;

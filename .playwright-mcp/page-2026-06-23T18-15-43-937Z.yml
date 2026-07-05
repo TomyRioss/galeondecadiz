@@ -1,0 +1,106 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e5]:
+      - link "GC" [ref=e6] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e8]: GC
+      - generic [ref=e9]:
+        - link "EDN" [ref=e10] [cursor=pointer]:
+          - /url: /escuela-nazaret
+          - generic [ref=e12]: EDN
+        - button "Abrir menú" [ref=e14]:
+          - img [ref=e15]
+  - main [ref=e16]
+  - contentinfo [ref=e19]:
+    - generic [ref=e21]:
+      - generic [ref=e22]:
+        - generic [ref=e23]:
+          - generic [ref=e24]:
+            - paragraph [ref=e25]: Fundación Social
+            - paragraph [ref=e26]: Galeona de Cádiz
+          - generic [ref=e27]:
+            - generic [ref=e28]:
+              - img [ref=e29]
+              - generic [ref=e31]: Dirección institucional — placeholder
+            - generic [ref=e32]:
+              - img [ref=e33]
+              - link "contacto@galeonadecadiz.org" [ref=e35] [cursor=pointer]:
+                - /url: mailto:contacto@galeonadecadiz.org
+            - generic [ref=e36]:
+              - img [ref=e37]
+              - generic [ref=e39]: +54 000 000 0000
+            - generic [ref=e40]:
+              - img [ref=e41]
+              - link "WhatsApp" [ref=e43] [cursor=pointer]:
+                - /url: https://wa.me/573112524239?text=Cordial%20saludo%2C%20estoy%20interesado%20en%20el%20libro%20Nuestra%20Se%C3%B1ora%20de%20Chiquinquir%C3%A1%20de%20La%20Estrella.
+        - generic [ref=e44]:
+          - paragraph [ref=e45]: Enlaces
+          - list [ref=e46]:
+            - listitem [ref=e47]:
+              - link "Nosotros" [ref=e48] [cursor=pointer]:
+                - /url: /nosotros
+            - listitem [ref=e49]:
+              - link "Fondo Editorial" [ref=e50] [cursor=pointer]:
+                - /url: /fondo-editorial
+            - listitem [ref=e51]:
+              - link "Capacitaciones" [ref=e52] [cursor=pointer]:
+                - /url: /capacitaciones
+            - listitem [ref=e53]:
+              - link "Devocionales" [ref=e54] [cursor=pointer]:
+                - /url: /devocionales
+            - listitem [ref=e55]:
+              - link "Auspicios y Pagos" [ref=e56] [cursor=pointer]:
+                - /url: /auspicios-pagos
+            - listitem [ref=e57]:
+              - link "Tienda" [ref=e58] [cursor=pointer]:
+                - /url: /tienda
+            - listitem [ref=e59]:
+              - link "Contacto" [ref=e60] [cursor=pointer]:
+                - /url: /contacto
+        - generic [ref=e61]:
+          - paragraph [ref=e62]: Redes Sociales
+          - generic [ref=e63]:
+            - link "Facebook" [ref=e64] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e65]
+            - link "Instagram" [ref=e67] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e68]
+            - link "YouTube" [ref=e70] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e71]
+            - link "LinkedIn" [ref=e73] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e74]
+            - link "Pinterest" [ref=e76] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e77]
+            - link "Twitter / X" [ref=e79] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e80]
+            - link "TikTok" [ref=e82] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e83]
+            - link "Spotify" [ref=e85] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e86]
+            - link "Speaker" [ref=e88] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e89]
+            - link "Google Podcast" [ref=e91] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e92]
+      - generic [ref=e95]:
+        - paragraph [ref=e96]: Copyright © 2026 Fondo Editorial Galeona. Todos los derechos reservados.
+        - generic [ref=e97]:
+          - link "Política de privacidad" [ref=e98] [cursor=pointer]:
+            - /url: https://docs.google.com/viewer?url=https://www.galeonadecadiz.org/pdf/pp-5.pdf
+          - link "Términos de uso" [ref=e99] [cursor=pointer]:
+            - /url: https://docs.google.com/viewer?url=https://www.galeonadecadiz.org/pdf/pp-5.pdf
+          - link "Admin" [ref=e100] [cursor=pointer]:
+            - /url: /login
+  - link "Contactar por WhatsApp" [ref=e101] [cursor=pointer]:
+    - /url: https://wa.me/573112524239?text=Cordial%20saludo%2C%20estoy%20interesado%20en%20el%20libro%20Nuestra%20Se%C3%B1ora%20de%20Chiquinquir%C3%A1%20de%20La%20Estrella.
+    - img [ref=e102]
+  - button "Open Next.js Dev Tools" [ref=e109] [cursor=pointer]:
+    - img [ref=e110]

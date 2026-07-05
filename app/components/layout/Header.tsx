@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import NavDesktop from "./NavDesktop";
 import NavMobile from "./NavMobile";
 
@@ -19,11 +20,14 @@ export default function Header() {
 
           {/* Logo Galeona de Cádiz */}
           <Link href="/" className="flex items-center gap-3 flex-shrink-0 group">
-            <div
-              className="w-12 h-12 md:w-14 md:h-14 rounded-full overflow-hidden flex-shrink-0 flex items-center justify-center text-white text-xs font-bold"
-              style={{ border: "2px solid #B87333", background: "#1F4FA3", fontFamily: "serif" }}
-            >
-              <span className="px-1">GC</span>
+            <div className="w-12 h-12 md:w-14 md:h-14 flex-shrink-0">
+              <Image
+                src="/logo Galeona-Color.png"
+                alt="Galeona de Cádiz"
+                width={56}
+                height={56}
+                className="w-full h-full object-contain"
+              />
             </div>
             <div className="hidden lg:block">
               <p
@@ -50,30 +54,14 @@ export default function Header() {
           <div className="flex items-center gap-3 flex-shrink-0">
             {/* Logo EDN */}
             <Link href="/escuela-nazaret" className="flex items-center gap-1.5 group">
-              <div
-                className="w-10 h-10 md:w-12 md:h-12 rounded-sm overflow-hidden flex-shrink-0 flex items-center justify-center"
-                style={{ border: "1px solid rgba(184,115,51,0.5)", background: "#1B6CA8" }}
-              >
-                  <span
-                    className="text-white font-bold text-xs tracking-wide"
-                    style={{ fontFamily: "var(--font-cinzel, serif)" }}
-                  >
-                    EDN
-                  </span>
-              </div>
-              <div className="hidden lg:block">
-                <p
-                  className="text-[#B87333] text-[0.55rem] tracking-widest uppercase leading-none"
-                  style={{ fontFamily: "var(--font-cinzel, serif)" }}
-                >
-                  Escuela de
-                </p>
-                <p
-                  className="text-white text-xs font-semibold tracking-wide"
-                  style={{ fontFamily: "var(--font-cinzel, serif)" }}
-                >
-                  Nazaret
-                </p>
+              <div className="w-16 h-16 md:w-20 md:h-20 flex-shrink-0">
+                <Image
+                  src="/logo EDN-Color.png"
+                  alt="Escuela de Nazaret"
+                  width={80}
+                  height={80}
+                  className="w-full h-full object-contain"
+                />
               </div>
             </Link>
 

@@ -4,6 +4,8 @@ import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { ArrowLeft, BookOpen, User, FileText, DollarSign, Package, Tag, Eye, ShoppingCart, Upload, X, CheckCircle2 } from "lucide-react";
+import FichaBibliograficaFields, { FICHA_BIBLIOGRAFICA_EMPTY } from "../../FichaBibliograficaFields";
+import GalleryUploader from "../../GalleryUploader";
 
 interface Book {
   id: string;
@@ -22,6 +24,35 @@ interface Book {
   disponibleCompra: boolean;
   starred: boolean;
   tipo: string;
+  galleryImages?: string[];
+  pdfPageImages?: string[];
+  subtitulo?: string;
+  basadoEnLaObraDe?: string;
+  editorAcademico?: string;
+  traductorCompilador?: string;
+  clasificacionAutor?: string;
+  coedicion?: string;
+  fechaAparicion?: string;
+  obraActualizadaA?: string;
+  editorial?: string;
+  tema?: string;
+  genero?: string;
+  resena?: string;
+  caratula?: string;
+  dimensiones?: string;
+  folios?: string;
+  isbnImpreso?: string;
+  isbnEbook?: string;
+  envioIncluido?: boolean;
+  costoEnvioColombia?: string;
+  costoEnvioExterior?: string;
+  promocion?: string;
+  valorNeto?: string;
+  impuestos?: string;
+  audiolibroDisponible?: boolean;
+  audiolibroIsbn?: string;
+  videolibroDisponible?: boolean;
+  videolibroIsbn?: string;
 }
 
 const inputCls = "w-full px-3 py-2 rounded-lg text-sm border-2 outline-none transition-all duration-200 focus:border-[#E8511A] placeholder:opacity-40";
@@ -35,9 +66,10 @@ const inputStyle = {
 const labelCls = "flex items-center gap-1.5 text-[0.6rem] tracking-[0.22em] uppercase font-semibold mb-1.5";
 const labelStyle = { color: "#B87333", fontFamily: "var(--font-cinzel, serif)" };
 
-export default function EditLibroPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = use(params);
+export default function EditLibroPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug: routeSlug } = use(params);
   const router = useRouter();
+  const [id, setId] = useState<string | null>(null);
   const [form, setForm] = useState({
     slug: "",
     nombre: "",
@@ -53,6 +85,9 @@ export default function EditLibroPage({ params }: { params: Promise<{ id: string
     activo: true,
     disponibleCompra: true,
     tipo: "IMPRESO" as "IMPRESO" | "EBOOK" | "AMBOS",
+    galleryImages: [] as string[],
+    pdfPageImages: [] as string[],
+    ...FICHA_BIBLIOGRAFICA_EMPTY,
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -64,8 +99,9 @@ export default function EditLibroPage({ params }: { params: Promise<{ id: string
       try {
         const res = await fetch("/api/admin/libros");
         const data = await res.json();
-        const book: Book = (data.books ?? []).find((b: Book) => b.id === id);
+        const book: Book = (data.books ?? []).find((b: Book) => b.slug === routeSlug);
         if (!book) { router.push("/admin/libros"); return; }
+        setId(book.id);
         setForm({
           slug: book.slug,
           nombre: book.nombre,
@@ -81,6 +117,35 @@ export default function EditLibroPage({ params }: { params: Promise<{ id: string
           activo: book.activo,
           disponibleCompra: book.disponibleCompra,
           tipo: book.tipo as "IMPRESO" | "EBOOK" | "AMBOS",
+          galleryImages: book.galleryImages ?? [],
+          pdfPageImages: book.pdfPageImages ?? [],
+          subtitulo: book.subtitulo ?? "",
+          basadoEnLaObraDe: book.basadoEnLaObraDe ?? "",
+          editorAcademico: book.editorAcademico ?? "",
+          traductorCompilador: book.traductorCompilador ?? "",
+          clasificacionAutor: book.clasificacionAutor ?? "",
+          coedicion: book.coedicion ?? "",
+          fechaAparicion: book.fechaAparicion ?? "",
+          obraActualizadaA: book.obraActualizadaA ?? "",
+          editorial: book.editorial ?? "",
+          tema: book.tema ?? "",
+          genero: book.genero ?? "",
+          resena: book.resena ?? "",
+          caratula: book.caratula ?? "",
+          dimensiones: book.dimensiones ?? "",
+          folios: book.folios ?? "",
+          isbnImpreso: book.isbnImpreso ?? "",
+          isbnEbook: book.isbnEbook ?? "",
+          envioIncluido: book.envioIncluido ?? false,
+          costoEnvioColombia: book.costoEnvioColombia ?? "",
+          costoEnvioExterior: book.costoEnvioExterior ?? "",
+          promocion: book.promocion ?? "",
+          valorNeto: book.valorNeto ?? "",
+          impuestos: book.impuestos ?? "",
+          audiolibroDisponible: book.audiolibroDisponible ?? false,
+          audiolibroIsbn: book.audiolibroIsbn ?? "",
+          videolibroDisponible: book.videolibroDisponible ?? false,
+          videolibroIsbn: book.videolibroIsbn ?? "",
         });
       } catch {
         setMsg({ type: "err", text: "Error al cargar el libro." });
@@ -89,7 +154,7 @@ export default function EditLibroPage({ params }: { params: Promise<{ id: string
       }
     }
     load();
-  }, [id, router]);
+  }, [routeSlug, router]);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
     const { name, value, type } = e.target;
@@ -120,6 +185,7 @@ export default function EditLibroPage({ params }: { params: Promise<{ id: string
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (!id) return;
     setSaving(true);
     setMsg(null);
     try {
@@ -315,6 +381,15 @@ export default function EditLibroPage({ params }: { params: Promise<{ id: string
               ))}
             </div>
           </section>
+
+          <FichaBibliograficaFields values={form} onChange={handleChange} />
+
+          <GalleryUploader
+            galleryImages={form.galleryImages}
+            pdfPageImages={form.pdfPageImages}
+            pdfUrl={form.pdfUrl}
+            onChange={(next) => setForm((prev) => ({ ...prev, ...next }))}
+          />
 
           {/* Mobile actions */}
           <div className="flex gap-3 xl:hidden">

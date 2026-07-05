@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import {
   FaFacebookF, FaInstagram, FaYoutube, FaLinkedinIn,
   FaPinterestP, FaXTwitter, FaTiktok, FaSpotify,
@@ -48,19 +49,30 @@ export default function Footer() {
 
           {/* Col 1: Identidad + contacto */}
           <div className="flex flex-col gap-4">
-            <div>
-              <p
-                className="text-[#B87333] text-[0.6rem] tracking-[0.2em] uppercase"
-                style={{ fontFamily: "var(--font-cinzel, serif)" }}
-              >
-                Fundación Social
-              </p>
-              <p
-                className="text-white text-lg font-bold tracking-wide"
-                style={{ fontFamily: "var(--font-cinzel, serif)" }}
-              >
-                Galeona de Cádiz
-              </p>
+            <div className="flex items-center gap-3">
+              <div className="w-14 h-14 flex-shrink-0">
+                <Image
+                  src="/logo Galeona-Color.png"
+                  alt="Galeona de Cádiz"
+                  width={56}
+                  height={56}
+                  className="w-full h-full object-contain"
+                />
+              </div>
+              <div>
+                <p
+                  className="text-[#B87333] text-[0.6rem] tracking-[0.2em] uppercase"
+                  style={{ fontFamily: "var(--font-cinzel, serif)" }}
+                >
+                  Fundación Social
+                </p>
+                <p
+                  className="text-white text-lg font-bold tracking-wide"
+                  style={{ fontFamily: "var(--font-cinzel, serif)" }}
+                >
+                  Galeona de Cádiz
+                </p>
+              </div>
             </div>
 
             <div className="flex flex-col gap-2 mt-1">
